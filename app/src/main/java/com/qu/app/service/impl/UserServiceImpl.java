@@ -1,6 +1,9 @@
 package com.qu.app.service.impl;
 
 import com.qu.app.dto.user.*;
+import com.qu.app.dto.user.request.UpdateRequest;
+import com.qu.app.dto.user.response.LoginResponse;
+import com.qu.app.dto.user.response.UpdateResponse;
 import com.qu.app.entity.Post;
 import com.qu.app.entity.User;
 import com.qu.app.error.QuException;
@@ -47,10 +50,10 @@ public class UserServiceImpl  implements UserService {
                 throw new QuException("User doesn't exists");
             }
 
-            // if user role is admin dont delete it
-            if(user.getRole().equals("ADMIN")){
-                throw new QuException("Admin can't be deleted");
-            }
+//            // if user role is admin dont delete it
+//            if(user.getRole().equals("ADMIN")){
+//                throw new QuException("Admin can't be deleted");
+//            }
             // begin first by delete the post by that user in Post table
             List<Post> postByThatUser = postRepository.fetchCurrentUserPost(userId);
             for(Post post: postByThatUser){
@@ -138,9 +141,9 @@ public class UserServiceImpl  implements UserService {
                 }
                 getCurrentUser.setMobile(encryptedMobile);
             }
-            if(Objects.nonNull(userUpdateRequest.getProfilePic())){
-                getCurrentUser.setProfilePic(userUpdateRequest.getProfilePic());
-            }
+//            if(Objects.nonNull(userUpdateRequest.getProfilePic())){
+//                getCurrentUser.setProfilePic(userUpdateRequest.getProfilePic());
+//            }
              if(Objects.nonNull(userUpdateRequest.getPassword())){
 
                  // throw error if password is less than 8
@@ -242,15 +245,14 @@ public class UserServiceImpl  implements UserService {
     }
 
     private GetAUserDTO setterForGetAUserDTO(User user){
-        /** decrypt user name **/
-        Map<String, String> pubPrivateKeys = keysService.SaveGetRSAKeys();
-        PrivateKey privateKey = keysService.decodePrivateKey(pubPrivateKeys.get("PRIVATE"));
+//        Map<String, String> pubPrivateKeys = keysService.SaveGetRSAKeys();
+//        PrivateKey privateKey = keysService.decodePrivateKey(pubPrivateKeys.get("PRIVATE"));
 
         GetAUserDTO getAUserDTO = new GetAUserDTO();
-        getAUserDTO.setEmail(user.getEmail());
+        getAUserDTO.setEmail(aes.decryptText("AES", user.getEmail()));
         getAUserDTO.setMobile(aes.decryptText("AES", user.getMobile()));
-//        getAUserDTO.setName(user.getName());
-        getAUserDTO.setName(rsa.decryptText(user.getName(), privateKey));
+        getAUserDTO.setName(user.getName());
+//        getAUserDTO.setName(rsa.decryptText(user.getName(), privateKey));
         return getAUserDTO;
     }
 
@@ -268,7 +270,7 @@ public class UserServiceImpl  implements UserService {
         updateResponse.setDob(user.getDob());
         updateResponse.setEmail(user.getEmail());
         updateResponse.setMobile(aes.decryptText("AES", user.getMobile()));
-        updateResponse.setProfilePic(user.getProfilePic());
+//        updateResponse.setProfilePic(user.getProfilePic());
         return updateResponse;
     }
 }

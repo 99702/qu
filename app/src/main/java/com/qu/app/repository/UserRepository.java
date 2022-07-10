@@ -30,7 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value="SELECT u FROM User u where u.dob= :dob")
     List<User> fetchBydobExact(LocalDate dob);
 
-    @Query(value="SELECT u from User u where u.role = :role")
+//    @Query(value="SELECT u from User u where u.role = :role")
+    @Query(value="SELECT u from User u where u.id = 1")
     List<User> fetchByRoleExact(String role);
 
     @Query("SELECT COUNT(u.id) from User u")
@@ -42,9 +43,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u) from User u where u.enabled=False")
     Long fetchTotalNotEnabledUser();
 
-    @Query("SELECT COUNT(u) from User u where u.role='ADMIN'")
+    @Query("SELECT COUNT(u) from User u where u.id=1")
     Long fetchTotalADMIN();
 
-    @Query("SELECT COUNT(u) from User u where u.role='USER'")
+    @Query("SELECT COUNT(u) from User u where u.id=1")
     Long fetchTotalUSER();
 }

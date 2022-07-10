@@ -2,6 +2,7 @@ package com.qu.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public class User {
     private Boolean enabled = false;
 
     @Column(name="role")
-    private String role = "USER";
+    private String role;
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Post> post = new HashSet<>();
@@ -47,5 +48,4 @@ public class User {
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="FK_COMMENT", referencedColumnName = "id")
     private Set<Comment> comment = new HashSet<>();
-
 }

@@ -1,19 +1,16 @@
 package com.qu.app.controller;
 
-import com.qu.app.dto.user.LoginRequest;
-import com.qu.app.dto.user.LoginResponse;
-import com.qu.app.dto.user.RegisterUserDTO;
+import com.qu.app.dto.user.request.LoginRequest;
+import com.qu.app.dto.user.response.LoginResponse;
+import com.qu.app.dto.user.response.RegisterResponse;
 import com.qu.app.entity.User;
 import com.qu.app.enumeration.PathConstant;
 import com.qu.app.service.AuthService;
-import com.qu.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,8 +31,13 @@ public class AuthController {
      * @param user
      * @return - ResponseEntity<RegisterUserDTO>
      */
-    @PostMapping(PathConstant.REGISTER_USER)
-    public ResponseEntity<RegisterUserDTO> registerUser(@RequestBody User user){
+
+    @PostMapping(value=PathConstant.REGISTER_USER)//, consumes = { "multipart/mixed", "multipart/form-data"})
+    public ResponseEntity<RegisterResponse> registerUser(@RequestBody User user){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authService.registerUser(user));
     }
+//    @PostMapping(value=PathConstant.REGISTER_USER, consumes = { "multipart/mixed", "multipart/form-data"})
+//    public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestPart(value = "profilePic", required = false) MultipartFile photoFile){
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authService.registerUser(user, photoFile));
+//    }
 }

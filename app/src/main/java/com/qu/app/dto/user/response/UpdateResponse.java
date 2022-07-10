@@ -1,4 +1,4 @@
-package com.qu.app.dto.user;
+package com.qu.app.dto.user.response;
 
 import lombok.Data;
 

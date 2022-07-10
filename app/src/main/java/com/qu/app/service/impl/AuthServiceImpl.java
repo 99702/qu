@@ -1,32 +1,25 @@
 package com.qu.app.service.impl;
-import com.qu.app.dto.user.*;
 
-import com.qu.app.entity.Keys;
+import com.qu.app.dto.user.request.LoginRequest;
+import com.qu.app.dto.user.response.LoginResponse;
+import com.qu.app.dto.user.response.RegisterResponse;
 import com.qu.app.entity.User;
 import com.qu.app.error.QuException;
-import com.qu.app.repository.KeysRepository;
 import com.qu.app.repository.PostRepository;
 import com.qu.app.repository.UserRepository;
 
 import com.qu.app.service.KeysService;
 import com.qu.app.utils.AES;
 
-import com.qu.app.utils.JwtProvider;
+import com.qu.app.utils.JwtUtil;
 import com.qu.app.utils.RSA;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.time.*;
-import java.util.*;
 
 
 import com.qu.app.service.AuthService;
@@ -34,29 +27,26 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
+    @Autowired
+    private JwtUtil jwtUtil;
     @Autowired
     private AES aes;
-
-
-    @Autowired
-    private JwtProvider jwtProvider;
 
     @Autowired
     KeysService keysService;
 
     @Autowired
     RSA rsa;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
 
 //    /******************* Get or generate *****************/
@@ -66,10 +56,10 @@ public class AuthServiceImpl implements AuthService {
 //
 
     @Override
-    public RegisterUserDTO registerUser(User user){
+    public RegisterResponse registerUser(User user){//, MultipartFile photoFile){
         try{
             User checkUserMobile = userRepository.fetchByMobileExact(aes.encryptText("AES", user.getMobile()));
-            User checkUserEmail = userRepository.fetchByEmailExact(user.getEmail());
+            User checkUserEmail = userRepository.fetchByEmailExact(aes.encryptText("AES", user.getEmail()));
 
             // check if any required fields are not null
             if( user.getPassword() == null) throw new QuException("Password can't be null");
@@ -108,13 +98,16 @@ public class AuthServiceImpl implements AuthService {
             }
 
             /******************* Get or generate *****************/
-            Map<String, String> publicPrivateKeys = keysService.SaveGetRSAKeys();
-            PublicKey publicKey  = keysService.decodePublicKey(publicPrivateKeys.get("PUBLIC"));
-            PrivateKey privateKey  = keysService.decodePrivateKey(publicPrivateKeys.get("PRIVATE"));
 
+//            Map<String, String> publicPrivateKeys = keysService.SaveGetRSAKeys();
+//            PublicKey publicKey  = keysService.decodePublicKey(publicPrivateKeys.get("PUBLIC"));
+//            PrivateKey privateKey  = keysService.decodePrivateKey(publicPrivateKeys.get("PRIVATE"));
+//            user.setName(rsa.encryptText(user.getName(), publicKey));
 
-            user.setName(rsa.encryptText(user.getName(), publicKey));
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            // save an encrypted email , encrypted password, encrypted mobile
+            user.setRole("USER");
+            user.setEmail(aes.encryptText("AES", user.getEmail()));
+            user.setPassword(aes.encryptText("AES", passwordEncoder.encode(user.getPassword())));
             user.setMobile(aes.encryptText("AES", user.getMobile()));
             User RegisteredUser = userRepository.save(user);
             return this.setterForRegisterUserDTO(RegisteredUser);
@@ -125,72 +118,72 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse loginUser(LoginRequest loginRequest) {
-
         try {
             // check if email or phone, password is not null
             if(loginRequest.getEmail() == null && loginRequest.getMobile() == null){
                 throw new QuException("Email or mobile can't be blank");
             }
             // check if user exists on given email or given mobile
-            User user = (loginRequest.getEmail() != null) ? userRepository.fetchByEmailExact(loginRequest.getEmail()) : userRepository.fetchByMobileExact(aes.encryptText("AES",loginRequest.getMobile())
+            User user = (loginRequest.getEmail() != null) ?
+                    userRepository.fetchByEmailExact(aes.encryptText("AES", loginRequest.getEmail())):
+                    userRepository.fetchByMobileExact(aes.encryptText("AES",loginRequest.getMobile())
             );
             if(user == null){
                 throw new QuException("User doesn't exists");
             }
 
             // check given user password and database password matched
-            String encodedPassword = userRepository.fetchById(user.getId()).getPassword();
+            String encodedPassword = aes.decryptText("AES", userRepository.fetchById(user.getId()).getPassword());
             boolean result = passwordEncoder.matches(loginRequest.getPassword(), encodedPassword);
             if(!result){
                 throw new QuException("Password doesn't matches");
             }
 
+            //generate token for this user
+            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+            String jwtToken = jwtUtil.generateToken(userDetails);
+
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++");
+            System.out.println("Original jwt: "+jwtToken);
+            System.out.println("Encrypted jwt: "+aes.encryptText("AES",jwtUtil.generateToken(userDetails))); // send the encrypted token
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++");
             return this.setterForLoginResponse(
                     user.getName(),
                     user.getEmail(),
-                    user.getId().toString()+"_"+randomString,
-                    "SASAFSADF",
-                    Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis())
+                    aes.encryptText("AES",jwtToken),
+                    "x8el",
+                    Instant.now()
+//                    Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis())
             );
 
         } catch (Exception e){
             throw new QuException(e.getMessage());
         }
     }
-    private  RegisterUserDTO setterForRegisterUserDTO(User user){
-        /******************* Get private key *****************/
-        Map<String, String> publicPrivateKeys = keysService.SaveGetRSAKeys();
-        PrivateKey privateKey  = keysService.decodePrivateKey(publicPrivateKeys.get("PRIVATE"));
-
-        String decryptedMobile = aes.encryptText("AES",user.getMobile());
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO();
-        registerUserDTO.setDob(user.getDob());
-        registerUserDTO.setEmail(user.getEmail());
-        registerUserDTO.setMobile(decryptedMobile);
-//        registerUserDTO.setName(user.getName());
-        registerUserDTO.setName(rsa.decryptText(user.getName(), privateKey));
+    private RegisterResponse setterForRegisterUserDTO(User user){
+        RegisterResponse registerUserDTO = new RegisterResponse();
+        registerUserDTO.setMessage(user.getName() + " registered successful.");
         return registerUserDTO;
     }
 
     private LoginResponse setterForLoginResponse(String name, String email, String token, String refreshToken, Instant expiresAt){
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setName(name);
-
-        loginResponse.setEmail(email);
+        loginResponse.setEmail(aes.decryptText("AES",email));
         loginResponse.setToken(token);
         loginResponse.setRefreshToken(refreshToken);
         loginResponse.setExpiresAt(expiresAt);
         return loginResponse;
     }
 
-    private String shuffler(Long num){
-        String str="QWERTYusdfghjkgywehbdsxhjnx!@#$%^&*()mzbcvcbnfn";
-        List<String> letters = Array.asList(str.split(""));
-        Collections.shuffle(letters);
-        String shuffled = "";
-        for(String l:letters){
-            shuffled += l;
-        }
-        return shuffled;
-    }
+//    private String shuffler(Long num){
+//        String str="QWERTYusdfghjkgywehbdsxhjnx!@#$%^&*()mzbcvcbnfn";
+//        List<String> letters = Array.asList(str.split(""));
+//        Collections.shuffle(letters);
+//        String shuffled = "";
+//        for(String l:letters){
+//            shuffled += l;
+//        }
+//        return shuffled;
+//    }
 }

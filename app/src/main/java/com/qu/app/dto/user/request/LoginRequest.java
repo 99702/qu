@@ -1,4 +1,4 @@
-package com.qu.app.dto.user;
+package com.qu.app.dto.user.request;
 
 import lombok.Data;
 

@@ -2,6 +2,8 @@ package com.qu.app.controller;
 
 import com.qu.app.dto.user.*;
 
+import com.qu.app.dto.user.request.UpdateRequest;
+import com.qu.app.dto.user.response.UpdateResponse;
 import com.qu.app.enumeration.PathConstant;
 import com.qu.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

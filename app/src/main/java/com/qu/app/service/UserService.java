@@ -1,6 +1,9 @@
 package com.qu.app.service;
 
 import com.qu.app.dto.user.*;
+import com.qu.app.dto.user.request.UpdateRequest;
+import com.qu.app.dto.user.response.UpdateResponse;
+
 import java.util.List;
 import java.util.Map;
 
