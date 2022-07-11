@@ -3,7 +3,10 @@ package com.qu.app.filter;
 import com.qu.app.error.QuException;
 import com.qu.app.utils.AES;
 import com.qu.app.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +16,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -41,6 +45,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // get jwt(encrypted)  from header and decrypt
                 jwt = aes.decryptText("AES", authorizationHeader.substring(7));
                 username = jwtUtil.extractUsername(jwt);
+                Claims claims = Jwts.parser()
+                        .setSigningKey(SECRET_KEY)
+                        .parseClaimsJws(jwt)
+                        .getBody();
+//                System.out.println(claims.get("userId"));
+//                System.out.println(((Boolean) claims.get("enabled")));
+//                System.out.println(((String) claims.get("role")));
+//                System.out.println(((String) claims.get("random")));
+
+//                // if user is  not enabled throw exception
+//                if(!(Boolean) claims.get("enabled")){
+//                    throw new QuException("User not enabled");
+//                }
+
             }
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // get userDetails from loadUserByUsername given Username as email
@@ -56,10 +74,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     throw new QuException("Token is invalid.");
                 }
             }
-
             filterChain.doFilter(request, response);
             }catch (Exception e){
             throw new QuException(e.getMessage());
         }
     }
+
+
+//    private JwtData generateJwtData(LinkedHashMap<String, Object> jwtHashMapper) {
+//        JwtData jwtData = new JwtData();
+//        jwtData.setName((String) jwtHashMapper.get("name"));
+//        jwtData.setId((Long) jwtHashMapper.get("id"));
+//        jwtData.setEnabled((Boolean) jwtHashMapper.get("enabled"));
+//        return jwtData;
+//    }
 }

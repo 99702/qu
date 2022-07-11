@@ -12,6 +12,4 @@ public class UpdateRequest {
     private String mobile;
     private String password;
     private byte[] profilePic;
-
-
 }

@@ -8,6 +8,7 @@ import com.qu.app.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +31,11 @@ public class PostController {
     /**
      * createPost - Creates a post
      * @param post
-     * @param userId
      * @return PostCreateDTO
      */
     @PostMapping(PathConstant.CREATE_POST)
-    public PostCreateDTO createPost(@RequestBody Post post, @PathVariable("userId") Long userId){
-        return postService.createPost(post, userId);
+    public PostCreateDTO createPost(@RequestBody Post post){
+        return postService.createPost(post);
     }
 
     /**
@@ -67,8 +67,20 @@ public class PostController {
      * @return GetAPostDTO
      */
     @PostMapping(PathConstant.SEARCH_POST_BY+"/t")
+    @PreAuthorize("ADMIN")
     public GetAPostDTO getByPostTitle(@RequestParam("title") String title) {
         return postService.fetchPostTitle(title);}
+
+    /**
+     * Gives array of posts matching that word in the title
+     * @param title
+     * @return List<GetAPostDTO>
+     */
+    @PostMapping(PathConstant.SEARCH_POST_BY+"/similar")
+    public List<GetAPostDTO> getByPostSimilarTitle(@RequestParam("title") String title) {
+        return postService.fetchSimilarPostTitle(title);}
+
+
 
     /**
      * Search post by description
@@ -85,4 +97,10 @@ public class PostController {
      */
     @PostMapping(PathConstant.SEARCH_POST_BY+"/u")
     public List<GetAPostDTO> getCurrentUserPost(@RequestParam("user") Long userId ) {return postService.fetchCurrentUserPost(userId);}
+
+
+    @PostMapping(PathConstant.CURRENT_LOGGED_USER)
+    public List<GetAPostDTO> getLoggedinUserPost(){
+        return postService.fetchLoggedInUserPost();
+    }
 }

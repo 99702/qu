@@ -50,10 +50,11 @@ public class UserServiceImpl  implements UserService {
                 throw new QuException("User doesn't exists");
             }
 
-//            // if user role is admin dont delete it
-//            if(user.getRole().equals("ADMIN")){
-//                throw new QuException("Admin can't be deleted");
-//            }
+            // if user role is admin dont delete it
+            if(user.getRole().equals("ADMIN")){
+                throw new QuException("Admin can't be deleted");
+            }
+
             // begin first by delete the post by that user in Post table
             List<Post> postByThatUser = postRepository.fetchCurrentUserPost(userId);
             for(Post post: postByThatUser){
@@ -169,11 +170,13 @@ public class UserServiceImpl  implements UserService {
         Long totalNotEnabledUser = userRepository.fetchTotalNotEnabledUser();
         Long totalUSER = userRepository.fetchTotalUSER();
         Long totalADMIN = userRepository.fetchTotalADMIN();
+        Long totalMonitor = userRepository.fetchTotalMONITOR();
         statsDict.put("total_user", totalUser);
         statsDict.put("total_enabled_user", totalEnabledUser);
         statsDict.put("total_not_enabled_user", totalNotEnabledUser);
         statsDict.put("total_ADMIN", totalADMIN);
         statsDict.put("total_USER", totalUSER);
+        statsDict.put("total_MONITOR", totalMonitor);
         return statsDict;
     }
 

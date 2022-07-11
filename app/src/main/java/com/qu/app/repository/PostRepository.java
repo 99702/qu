@@ -12,6 +12,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.title=:title")
     Post fetchPostByTitle(String title);
 
+    @Query(value = "SELECT * FROM post p WHERE p.title LIKE CONCAT('%', :title, '%')", nativeQuery = true)
+    List<Post> fetchPostBySimilarTitle(String title);
+
 //    @Query("SELECT p from Post p where p.description LIKE CONCAT('%',:desc,'%')")
     @Query(value = "SELECT * from post p where p.description LIKE CONCAT('%', :desc, '%')", nativeQuery = true)
     List<Post> fetchPostDescription(String desc);

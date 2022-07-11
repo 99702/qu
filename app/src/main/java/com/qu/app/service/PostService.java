@@ -7,7 +7,7 @@ import com.qu.app.entity.Post;
 import java.util.List;
 
 public interface PostService {
-    PostCreateDTO createPost(Post post, Long userId);
+    PostCreateDTO createPost(Post post);
 
     List<GetAPostDTO> getAllPost();
 
@@ -21,4 +21,7 @@ public interface PostService {
 
     String deletePost(String PostTitle, Long userId);
 
+    List<GetAPostDTO> fetchSimilarPostTitle(String title);
+
+    List<GetAPostDTO> fetchLoggedInUserPost();
 }

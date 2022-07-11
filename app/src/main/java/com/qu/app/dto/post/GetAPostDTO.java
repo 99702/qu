@@ -12,5 +12,4 @@ public class GetAPostDTO {
     private String title;
     private String description;
     private Set<Images> images;
-
 }

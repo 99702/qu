@@ -1,5 +1,6 @@
 package com.qu.app.service.impl;
 
+import com.qu.app.dto.CustomUserDetails;
 import com.qu.app.dto.post.GetAPostDTO;
 import com.qu.app.dto.post.PostCreateDTO;
 import com.qu.app.dto.user.GetAUserDTO;
@@ -9,8 +10,11 @@ import com.qu.app.error.QuException;
 import com.qu.app.repository.PostRepository;
 import com.qu.app.repository.UserRepository;
 import com.qu.app.service.PostService;
+import com.qu.app.utils.AES;
 import com.qu.app.utils.RSA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,19 +32,24 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private RSA rsa;
 
-
+    @Autowired
+    private AES aes;
 
 
     @Override
-    public PostCreateDTO createPost(Post post, Long userId) {
+    public PostCreateDTO createPost(Post post) {
         // get user from userId
         try{
-            User user = userRepository.findById(userId).get();
+            // get that user from jwt
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 
-            // throw error if user doesnt exists
-            if(user == null){
-                throw new QuException("User doesn't exists");
-            }
+            User user =  userRepository.fetchByEmailExact(customUserDetails.getUsername());
+
+            // throw error if user doesn't exists
+//            if(user == null){
+//                throw new QuException("User doesn't exists");
+//            }
 
             // throw error if description and title is none
             if(post.getDescription() == null){
@@ -188,6 +197,41 @@ public class PostServiceImpl implements PostService {
             postRepository.delete(getCurrentPost);
             return "Post deleted successfully";
         }catch(Exception e){
+            throw new QuException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<GetAPostDTO> fetchSimilarPostTitle(String title) {
+            List<Post> postList = postRepository.fetchPostBySimilarTitle(title);
+            List<GetAPostDTO> getAPostDTOList = new ArrayList<>();
+            for(Post post: postList){
+                GetAPostDTO getAPostDTO = this.setterForGetAPostDTO(post);
+                getAPostDTOList.add(getAPostDTO);
+            }
+            return getAPostDTOList;
+
+    }
+
+    @Override
+    public List<GetAPostDTO> fetchLoggedInUserPost() {
+        try{
+
+            // get userid from jwt token
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+
+            List<Post> postList = postRepository.fetchCurrentUserPost(customUserDetails.getId());
+            List<GetAPostDTO> getAPostDTOList = new ArrayList<>();
+            for(Post post: postList){
+                GetAPostDTO getAPostDTO = this.setterForGetAPostDTO(post);
+                getAPostDTOList.add(getAPostDTO);
+            }
+            if(getAPostDTOList.size() == 0){
+                throw new QuException("User doesn't exists");
+            }
+            return getAPostDTOList;
+        } catch(Exception e){
             throw new QuException(e.getMessage());
         }
     }

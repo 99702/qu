@@ -29,8 +29,8 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<SimpleGrantedAuthority> set = new HashSet<>();
-        set.add(new SimpleGrantedAuthority(this.user.getRole()));
-        return null;
+        set.add(new SimpleGrantedAuthority(user.getRole()));
+        return set;
     }
 
     @Override
@@ -42,8 +42,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
-//        System.out.println("++++"+aes.encryptText("AES",user.getEmail())+"++++");
-//        return aes.encryptText("AES",user.getEmail());
+    }
+
+    public Long getId(){
+        return user.getId();
     }
 
     @Override
