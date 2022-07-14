@@ -10,6 +10,7 @@ import com.qu.app.error.QuException;
 import com.qu.app.repository.PostRepository;
 import com.qu.app.repository.UserRepository;
 import com.qu.app.service.KeysService;
+import com.qu.app.service.SessionService;
 import com.qu.app.service.UserService;
 import com.qu.app.utils.AES;
 
@@ -40,10 +41,14 @@ public class UserServiceImpl  implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    SessionService sessionService;
+
+    @Autowired
     private AES aes;
     @Override
     public String deleteUser(Long userId) {
         try{
+            sessionService.loggedInUser();
             User user = userRepository.fetchById(userId);
             // throws error if user is null
             if(user == null){

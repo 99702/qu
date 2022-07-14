@@ -4,11 +4,20 @@ import com.qu.app.dto.post.GetAPostDTO;
 import com.qu.app.dto.post.PostCreateDTO;
 import com.qu.app.entity.Post;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface PostService {
-    PostCreateDTO createPost(Post post);
+    /**
+     * createPost - Creates a post
+     * @param post
+     * @return PostCreateDTO
+     */
+    PostCreateDTO createPost(Post post, HttpServletRequest request);
 
+    /**
+     * @return
+     */
     List<GetAPostDTO> getAllPost();
 
     GetAPostDTO fetchPostTitle(String title);

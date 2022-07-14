@@ -12,17 +12,23 @@ import com.qu.app.repository.UserRepository;
 import com.qu.app.service.PostService;
 import com.qu.app.utils.AES;
 import com.qu.app.utils.RSA;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class PostServiceImpl implements PostService {
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
     @Autowired
     private UserRepository userRepository;
 
@@ -37,14 +43,26 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public PostCreateDTO createPost(Post post) {
+    public PostCreateDTO createPost(Post post, HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
         // get user from userId
         try{
             // get that user from jwt
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+            String jwt = aes.decryptText("AES",authorizationHeader.substring(7) );
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(jwt)
+                    .getBody();
+            Boolean checkIfEnabled = (Boolean) claims.get("enabled");
+            String checkUserRole = (String) claims.get("role");
+            String checkRandomString = (String) claims.get("random");
+            Long  checkUserIdFromToken = Long.valueOf((Integer)claims.get("userId"));
 
-            User user =  userRepository.fetchByEmailExact(customUserDetails.getUsername());
+            User user = userRepository.fetchById(checkUserIdFromToken);
+//            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//            CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+//
+//            User user =  userRepository.fetchByEmailExact(customUserDetails.getUsername());
 
             // throw error if user doesn't exists
 //            if(user == null){

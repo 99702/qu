@@ -25,6 +25,9 @@ import java.time.*;
 import com.qu.app.service.AuthService;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 @Service
 public class AuthServiceImpl implements AuthService {
     @Autowired
@@ -117,8 +120,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse loginUser(LoginRequest loginRequest) {
+    public LoginResponse loginUser(HttpServletRequest request, LoginRequest loginRequest) {
         try {
+            // first check session exists or not
+            // If not available create new session
+            HttpSession sessionObj = request.getSession(false);
+
+            if(sessionObj == null){
+                sessionObj = request.getSession(true);
+            }
+
             // check if email or phone, password is not null
             if(loginRequest.getEmail() == null && loginRequest.getMobile() == null){
                 throw new QuException("Email or mobile can't be blank");
@@ -141,20 +152,80 @@ public class AuthServiceImpl implements AuthService {
 
             //generate token for this user
             UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-            String jwtToken = jwtUtil.generateToken(userDetails);
+//            String jwtToken = sessionObj.getAttribute("jwtToken") == null ?
+//                    aes.encryptText("AES", jwtUtil.generateToken(userDetails))
+//                    :(String) sessionObj.getAttribute("jwtToken");
+            String jwtToken =  aes.encryptText("AES", jwtUtil.generateToken(userDetails));
 
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++");
-            System.out.println("Original jwt: "+jwtToken);
-            System.out.println("Encrypted jwt: "+aes.encryptText("AES",jwtUtil.generateToken(userDetails))); // send the encrypted token
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++");
+            // save that token and other logged-in user details in session
+            sessionObj.setAttribute("jwtToken", jwtToken);
+            sessionObj.setAttribute("userId", user.getId());
+            sessionObj.setAttribute("name", user.getName());
+            sessionObj.setAttribute("email", user.getEmail());
+            sessionObj.setAttribute("enabled", user.getEnabled());
+            sessionObj.setAttribute("mobile", user.getMobile());
+            sessionObj.setAttribute("role", user.getRole());
+
             return this.setterForLoginResponse(
                     user.getName(),
                     user.getEmail(),
-                    aes.encryptText("AES",jwtToken),
-                    "x8el",
+                    jwtToken,
+                    (String) sessionObj.getAttribute("name"),
                     Instant.now()
 //                    Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis())
             );
+
+//            // first check session exists or not
+//            // If not available create new session
+////            HttpSession sessionObj = request.getSession(false);
+//
+//            if(sessionObj == null){
+//                sessionObj = request.getSession(true);
+//            }
+//
+//            // check if email or phone, password is not null
+//            if(loginRequest.getEmail() == null && loginRequest.getMobile() == null){
+//                throw new QuException("Email or mobile can't be blank");
+//            }
+//            // check if user exists on given email or given mobile
+//            User user = (loginRequest.getEmail() != null) ?
+//                    userRepository.fetchByEmailExact(aes.encryptText("AES", loginRequest.getEmail())):
+//                    userRepository.fetchByMobileExact(aes.encryptText("AES",loginRequest.getMobile())
+//            );
+//            if(user == null){
+//                throw new QuException("User doesn't exists");
+//            }
+//
+//            // check given user password and database password matched
+//            String encodedPassword = aes.decryptText("AES", userRepository.fetchById(user.getId()).getPassword());
+//            boolean result = passwordEncoder.matches(loginRequest.getPassword(), encodedPassword);
+//            if(!result){
+//                throw new QuException("Password doesn't matches");
+//            }
+//
+//            //generate token for this user
+//            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+//            String jwtToken = sessionObj.getAttribute("jwtToken") == null ?
+//                    aes.encryptText("AES", jwtUtil.generateToken(userDetails))
+//                    :(String) sessionObj.getAttribute("jwtToken");
+//
+//            // save that token and other logged-in user details in session
+//            sessionObj.setAttribute("jwtToken", jwtToken);
+//            sessionObj.setAttribute("userId", user.getId());
+//            sessionObj.setAttribute("name", user.getName());
+//            sessionObj.setAttribute("email", user.getEmail());
+//            sessionObj.setAttribute("enabled", user.getEnabled());
+//            sessionObj.setAttribute("mobile", user.getMobile());
+//            sessionObj.setAttribute("role", user.getRole());
+//
+//            return this.setterForLoginResponse(
+//                    user.getName(),
+//                    user.getEmail(),
+//                    jwtToken,
+//                    (String) sessionObj.getAttribute("name"),
+//                    Instant.now()
+////                    Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis())
+//            );
 
         } catch (Exception e){
             throw new QuException(e.getMessage());

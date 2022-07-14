@@ -58,7 +58,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                if(!(Boolean) claims.get("enabled")){
 //                    throw new QuException("User not enabled");
 //                }
-
             }
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // get userDetails from loadUserByUsername given Username as email

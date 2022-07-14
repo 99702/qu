@@ -21,7 +21,7 @@ public class PathConstant {
     public static final String CURRENT_LOGGED_USER = "current";
 
     // Comment constants
-    public static final String CREATE_COMMENT = "create/{userId}/{postId}";
+    public static final String CREATE_COMMENT = "create/{postId}/";
 
     /*
     statistics

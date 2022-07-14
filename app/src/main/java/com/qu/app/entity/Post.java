@@ -4,6 +4,7 @@ package com.qu.app.entity;
 
 import lombok.Data;
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 

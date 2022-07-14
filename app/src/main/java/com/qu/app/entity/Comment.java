@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Data
 public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
     private Long id;
 
     @Column(name="comment")

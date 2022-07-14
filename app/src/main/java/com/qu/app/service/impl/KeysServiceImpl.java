@@ -25,14 +25,12 @@ public class KeysServiceImpl implements KeysService {
     @Autowired
     private RSA rsa;
 
-
     @Autowired
     private KeysRepository keysRepository;
 
-
     @Override
     public Map<String, String > SaveGetRSAKeys() {
-        // check and if publicsave public private key in database
+        // check and if public, save public private key in database
         if(keysRepository.findByName("PUBLIC") == null){
             // Initialization of key pair for encryption and decryption
             KeyPair keyPair = rsa.getKeyPair();

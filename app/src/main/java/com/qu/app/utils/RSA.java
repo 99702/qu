@@ -34,13 +34,13 @@ public class RSA {
     }
 
     public String decryptText(String inputString, Key privateKey){
-        try{
+        try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] inputStringBytes = Base64.getDecoder().decode(inputString.getBytes());
             byte[] plainText = cipher.doFinal(inputStringBytes);
             return new String(plainText);
-        } catch(Exception e){
+        } catch(Exception e) {
             throw new QuException(e.getMessage());
         }
     }

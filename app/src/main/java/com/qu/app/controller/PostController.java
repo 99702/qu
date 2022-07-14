@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,14 +29,11 @@ public class PostController {
         return postService.getAllPost();
     }
 
-    /**
-     * createPost - Creates a post
-     * @param post
-     * @return PostCreateDTO
-     */
+
     @PostMapping(PathConstant.CREATE_POST)
-    public PostCreateDTO createPost(@RequestBody Post post){
-        return postService.createPost(post);
+    @PreAuthorize("hasAuthority('ADMIN'")
+    public PostCreateDTO createPost(@RequestBody Post post, HttpServletRequest request){
+        return postService.createPost(post, request);
     }
 
     /**

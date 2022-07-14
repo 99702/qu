@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,7 +26,7 @@ public class AuthController {
      * @return - LoginResponse
      */
     @PostMapping(PathConstant.LOGIN_USER)
-    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest){return authService.loginUser(loginRequest);};
+    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request){return authService.loginUser(request, loginRequest);};
 
     /**
      * Register a user
