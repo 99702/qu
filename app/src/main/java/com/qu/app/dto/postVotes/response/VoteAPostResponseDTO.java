@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
-@Builder
-
+@Data
 public class VoteAPostResponseDTO {
     private Long voteCount;
     private String postTitle;

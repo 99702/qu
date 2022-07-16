@@ -253,20 +253,12 @@ public class UserServiceImpl  implements UserService {
     }
 
     private GetAUserDTO setterForGetAUserDTO(User user){
-        return GetAUserDTO.builder()
-                .email(aes.decryptText("AES", user.getEmail()))
-                .mobile(aes.decryptText("AES", user.getMobile()))
-                .name(user.getName())
-                .profilePic(user.getProfilePic())
-                .build();
-    }
-
-    private LoginResponse setterForLoginResponse(User user){
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setEmail(user.getEmail());
-        loginResponse.setName(user.getName());
-        loginResponse.setToken("0-32i23892uihskjbsdfiq2379ry233iorfbkvgasigb");
-        return loginResponse;
+        GetAUserDTO getAUserDTO = new GetAUserDTO();
+        getAUserDTO.setEmail(aes.decryptText("AES", user.getEmail()));
+        getAUserDTO.setMobile(aes.decryptText("AES", user.getMobile()));
+        getAUserDTO.setName(user.getName());
+        getAUserDTO.setProfilePic(user.getProfilePic());
+        return getAUserDTO;
     }
 
     private  UpdateResponse setterForUpdateResponse(User user){

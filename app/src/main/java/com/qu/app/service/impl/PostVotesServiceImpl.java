@@ -82,10 +82,10 @@ public class PostVotesServiceImpl implements PostVotesService {
 
 
     private VoteAPostResponseDTO setterForVoteAPostResponseDTO(Long postId, String postTitle){
-        return VoteAPostResponseDTO.builder()
-                .voteCount(postVotesRepository.fetchPostVoteCount(postId))
-                .postTitle(postTitle)
-                .build();
+        VoteAPostResponseDTO voteAPostResponseDTO = new VoteAPostResponseDTO();
+        voteAPostResponseDTO.setPostTitle(postTitle);
+        voteAPostResponseDTO.setVoteCount(postVotesRepository.fetchPostVoteCount(postId));
+        return voteAPostResponseDTO;
     }
 
 
