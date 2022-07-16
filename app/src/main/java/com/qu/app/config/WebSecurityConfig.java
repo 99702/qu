@@ -31,6 +31,7 @@ public class WebSecurityConfig {
             "/post/" + PathConstant.SEARCH_POST_BY + "/d",
             "/post/" + PathConstant.SEARCH_POST_BY + "/u",
             "/post/" + PathConstant.SEARCH_POST_BY + "/similar",
+            "/post/" + PathConstant.LIST_POST,
     };
 
     private static final String[] ADMIN_URLS = {

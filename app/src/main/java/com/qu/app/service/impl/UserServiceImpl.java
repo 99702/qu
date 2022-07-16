@@ -253,15 +253,12 @@ public class UserServiceImpl  implements UserService {
     }
 
     private GetAUserDTO setterForGetAUserDTO(User user){
-//        Map<String, String> pubPrivateKeys = keysService.SaveGetRSAKeys();
-//        PrivateKey privateKey = keysService.decodePrivateKey(pubPrivateKeys.get("PRIVATE"));
-
-        GetAUserDTO getAUserDTO = new GetAUserDTO();
-        getAUserDTO.setEmail(aes.decryptText("AES", user.getEmail()));
-        getAUserDTO.setMobile(aes.decryptText("AES", user.getMobile()));
-        getAUserDTO.setName(user.getName());
-//        getAUserDTO.setName(rsa.decryptText(user.getName(), privateKey));
-        return getAUserDTO;
+        return GetAUserDTO.builder()
+                .email(aes.decryptText("AES", user.getEmail()))
+                .mobile(aes.decryptText("AES", user.getMobile()))
+                .name(user.getName())
+                .profilePic(user.getProfilePic())
+                .build();
     }
 
     private LoginResponse setterForLoginResponse(User user){

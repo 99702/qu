@@ -33,8 +33,8 @@ public class User {
     @Column(name="mobile", nullable = false, unique = true)
     private String mobile;
 
-    @Column(name = "image", unique = false, length = 100000)
-    private byte[] profilePic;
+    @Column(name = "profile_pic")
+    private String profilePic;
 
     @Column(name="enabled")
     private Boolean enabled = false;

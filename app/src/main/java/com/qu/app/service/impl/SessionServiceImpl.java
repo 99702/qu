@@ -21,21 +21,8 @@ public class SessionServiceImpl implements SessionService {
         loggedInUser.setUserId(null);
     }
 
-
-    public  SessionServiceImpl(HttpServletRequest request){
-        this.request = request;
-    }
     @Override
     public LoggedInUser loggedInUser() {
-//        LoggedInUser loggedInUser = LoggedInUser.builder()
-//                .name((String) this.request.getAttribute("name"))
-//                .email((String) this.request.getAttribute("email"))
-//                .role((String) this.request.getAttribute("role"))
-//                .mobile((String) this.request.getAttribute("mobile"))
-//                .enabled((boolean) this.request.getAttribute("enabled"))
-//                .jwtToken((String) this.request.getAttribute("jwtToken"))
-////                .userId()
-//                .build();
         return this.loggedInUser;
     }
 

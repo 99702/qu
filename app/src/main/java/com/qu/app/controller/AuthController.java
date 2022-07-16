@@ -34,12 +34,9 @@ public class AuthController {
      * @return - ResponseEntity<RegisterUserDTO>
      */
 
-    @PostMapping(value=PathConstant.REGISTER_USER)//, consumes = { "multipart/mixed", "multipart/form-data"})
-    public ResponseEntity<RegisterResponse> registerUser(@RequestBody User user){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authService.registerUser(user));
+    @PostMapping(value=PathConstant.REGISTER_USER)
+    public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestParam(name = "profilePic", required = false) MultipartFile profilePic){
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(user, profilePic));
     }
-//    @PostMapping(value=PathConstant.REGISTER_USER, consumes = { "multipart/mixed", "multipart/form-data"})
-//    public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestPart(value = "profilePic", required = false) MultipartFile photoFile){
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(authService.registerUser(user, photoFile));
-//    }
+
 }

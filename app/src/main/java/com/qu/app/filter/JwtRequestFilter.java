@@ -49,10 +49,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         .setSigningKey(SECRET_KEY)
                         .parseClaimsJws(jwt)
                         .getBody();
-//                System.out.println(claims.get("userId"));
-//                System.out.println(((Boolean) claims.get("enabled")));
-//                System.out.println(((String) claims.get("role")));
-//                System.out.println(((String) claims.get("random")));
 
 //                // if user is  not enabled throw exception
 //                if(!(Boolean) claims.get("enabled")){

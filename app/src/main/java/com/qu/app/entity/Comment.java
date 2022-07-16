@@ -9,9 +9,6 @@ import java.io.Serializable;
 @IdClass(Comment.class)
 @Data
 public class Comment implements Serializable {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name="comment")
     private String comment;
 

@@ -3,7 +3,8 @@ package com.qu.app.service.impl;
 import com.qu.app.dto.CustomUserDetails;
 import com.qu.app.dto.post.GetAPostDTO;
 import com.qu.app.dto.post.PostCreateDTO;
-import com.qu.app.dto.user.GetAUserDTO;
+import com.qu.app.dto.post.response.PostListWithUserDetails;
+import com.qu.app.dto.post.response.PostUpdateResponseDTO;
 import com.qu.app.entity.Post;
 import com.qu.app.entity.User;
 import com.qu.app.error.QuException;
@@ -20,10 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PostUpdate;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -31,16 +32,12 @@ public class PostServiceImpl implements PostService {
     private String SECRET_KEY;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private RSA rsa;
-
     @Autowired
     private AES aes;
-
 
     @Override
     public PostCreateDTO createPost(Post post, HttpServletRequest request) {
@@ -55,7 +52,6 @@ public class PostServiceImpl implements PostService {
                     .getBody();
             Boolean checkIfEnabled = (Boolean) claims.get("enabled");
             String checkUserRole = (String) claims.get("role");
-            String checkRandomString = (String) claims.get("random");
             Long  checkUserIdFromToken = Long.valueOf((Integer)claims.get("userId"));
 
             User user = userRepository.fetchById(checkUserIdFromToken);
@@ -151,10 +147,33 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Post post, String postTitle, Long userId) {
+    public PostUpdateResponseDTO updatePost(HttpServletRequest request, Post post, String postTitle) {
+        String authorizationHeader = request.getHeader("Authorization");
         try{
+            // get that current Post from post title
             Post currentPost = postRepository.fetchPostByTitle(postTitle);
-            User user = userRepository.fetchById(userId);
+
+            // get loggedIn user from jwt
+            String jwt = aes.decryptText("AES",authorizationHeader.substring(7) );
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(jwt)
+                    .getBody();
+
+            Long checkLoggedInUserId = Long.valueOf((Integer) claims.get("userId"));
+            String checkLoggedInUserName = (String) claims.get("name");
+            String checkLoggedInUserRole = (String) claims.get("role");
+
+            // if that user is not admin
+            // then check if token userId and post userId matches
+            // if loggedIn user id and post user id doesn't match throw error
+            if(!Objects.equals(checkLoggedInUserRole, "ADMIN")){
+                if(!checkLoggedInUserId.equals(currentPost.getId()))
+                    throw new QuException("Current user `" + checkLoggedInUserName + "`" + " is unauthorized to update `" + currentPost.getUser().getName() + "` post.");
+            }
+
+            // get userId from jwt token
+            User user = userRepository.fetchById(checkLoggedInUserId);
 
             // check if userId exists
             if(user == null){
@@ -166,16 +185,11 @@ public class PostServiceImpl implements PostService {
                 throw new QuException("Post doesn't exists");
             }
 
-            // check if post title author and param userId matches
-            if(!Objects.equals(currentPost.getUser().getId(), user.getId())){
-                throw new QuException("Unauthorized, user doesn't matche with post author");
-            }
-
             // check if given post title already exists in the database
             if(postRepository.fetchPostByTitle(post.getTitle()) != null){
                 throw new QuException("Title already exists");
-
             }
+
             // check if given post fields are null  if null leave, else update the currentPost with the updated field
             if(Objects.nonNull(post.getTitle()) && !"".equalsIgnoreCase(post.getTitle())){
                 currentPost.setTitle(post.getTitle());
@@ -184,8 +198,7 @@ public class PostServiceImpl implements PostService {
                 currentPost.setDescription(post.getDescription());
             }
             Post updatedPost = postRepository.save(currentPost);
-            updatedPost.setUser(null);
-            return updatedPost;
+            return this.setterForPostUpdateResponseDTO(updatedPost);
 
         }catch (Exception e){
             throw  new QuException(e.getMessage());
@@ -221,20 +234,19 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<GetAPostDTO> fetchSimilarPostTitle(String title) {
-            List<Post> postList = postRepository.fetchPostBySimilarTitle(title);
-            List<GetAPostDTO> getAPostDTOList = new ArrayList<>();
-            for(Post post: postList){
-                GetAPostDTO getAPostDTO = this.setterForGetAPostDTO(post);
-                getAPostDTOList.add(getAPostDTO);
-            }
-            return getAPostDTOList;
+        List<Post> postList = postRepository.fetchPostBySimilarTitle(title);
+        List<GetAPostDTO> getAPostDTOList = new ArrayList<>();
+        for(Post post: postList){
+            GetAPostDTO getAPostDTO = this.setterForGetAPostDTO(post);
+            getAPostDTOList.add(getAPostDTO);
+        }
+        return getAPostDTOList;
 
     }
 
     @Override
     public List<GetAPostDTO> fetchLoggedInUserPost() {
         try{
-
             // get userid from jwt token
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
@@ -246,12 +258,43 @@ public class PostServiceImpl implements PostService {
                 getAPostDTOList.add(getAPostDTO);
             }
             if(getAPostDTOList.size() == 0){
-                throw new QuException("User doesn't exists");
+                throw new QuException("You haven't created any post. ");
             }
             return getAPostDTOList;
         } catch(Exception e){
             throw new QuException(e.getMessage());
         }
+    }
+
+    @Override
+    public List<PostListWithUserDetails> fetchListOfPostsBasedOn(Map<String, String> allParams) {
+        String email = allParams.get("userEmail");
+        String mobile = allParams.get("userMobile");
+        String dobStr = allParams.get("userDob");
+        String role = allParams.get("userRole");
+        String title = allParams.get("postTitle");
+        String description = allParams.get("postDescription");
+        System.out.println(dobStr);
+        try{
+            if(description != null && mobile != null){
+                return postRepository.listOnPostDescriptionAndUserMobile(description, aes.encryptText("AES",mobile));
+            }
+            if(description != null && email != null){
+                return postRepository.listOnPostDescriptionAndUserEmail(description, aes.encryptText("AES",email));
+            }
+            if(description != null && dobStr != null){
+                return postRepository.listOnPostDescriptionAndUserDob(description, LocalDate.parse(dobStr));
+            }
+            if(title != null && dobStr != null){
+                return postRepository.listOnPostTitleAndUserDob(title, LocalDate.parse(dobStr));
+            }
+
+
+            return null;
+        } catch(Exception e){
+            throw new QuException(e.getMessage());
+        }
+
     }
 
     private PostCreateDTO setterForPostCreateDTO(Post post){
@@ -262,6 +305,13 @@ public class PostServiceImpl implements PostService {
 
         return postCreateDTO;
     }
+    private PostUpdateResponseDTO setterForPostUpdateResponseDTO(Post post){
+        return PostUpdateResponseDTO.builder()
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .authorName(post.getUser().getName())
+                .build();
+    }
     private GetAPostDTO setterForGetAPostDTO(Post post){
         GetAPostDTO getAPostDTO = new GetAPostDTO();
         getAPostDTO.setDescription(post.getDescription());
@@ -271,5 +321,10 @@ public class PostServiceImpl implements PostService {
         return getAPostDTO;
     }
 
+//    private List<PostListWithUserDetails> setterForPostListWithUserDetails(PostListWithUserDetails postListWithUserDetails){
+//        List<PostListWithUserDetails> postListWithUserDetailsList = new ArrayList<>();
+////        for(PostListWithUserDetails postListWithUserDetails1: postListWithUserDetailsList)
+//
+//    }
 
 }

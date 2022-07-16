@@ -5,6 +5,7 @@ import com.qu.app.dto.user.LoggedInUser;
 public interface SessionService {
     /**
      * Service provides information of logged in user
+     *
      * @return LoggedInUserDto
      */
     LoggedInUser loggedInUser();
@@ -12,4 +13,5 @@ public interface SessionService {
     String email();
 
     Long mobile();
+
 }

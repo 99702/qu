@@ -50,7 +50,7 @@ public class JwtUtil {
         claims.put("userId", user.getId());
         claims.put("enabled", user.getEnabled());
         claims.put("role", user.getRole());
-        claims.put("random", "This is some random text");
+        claims.put("name", user.getName());
         return createToken(claims, userDetails.getUsername());
     }
 

@@ -52,4 +52,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u) from User u where u.role='MONITOR'")
     Long fetchTotalMONITOR();
 
+
+
 }

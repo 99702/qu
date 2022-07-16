@@ -12,7 +12,6 @@ import java.util.Base64;
 
 @Component
 public class AES {
-
     private  final String quAESSecretKey = "1234567890123456";
     public String encryptText(String algorithm, String inputString){
         try{

@@ -9,6 +9,7 @@ import com.qu.app.repository.PostRepository;
 import com.qu.app.repository.UserRepository;
 
 import com.qu.app.service.KeysService;
+import com.qu.app.service.SessionService;
 import com.qu.app.utils.AES;
 
 import com.qu.app.utils.JwtUtil;
@@ -19,11 +20,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.*;
+import java.util.UUID;
 
 
 import com.qu.app.service.AuthService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -51,15 +57,15 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    SessionServiceImpl sessionService;
 
-//    /******************* Get or generate *****************/
-//    List<String> publicPrivateKeys = keysService.SaveGetRSAKeys();
-//    PublicKey publicKey  = keysService.decodePublicKey(publicPrivateKeys.get(0));
-//    PrivateKey privateKey  = keysService.decodePrivateKey(publicPrivateKeys.get(1));
-//
+    // set photo upload directory
+    public static String uploadDirectory = System.getProperty("user.dir")+"/app/src/main/resources/static/images/profilePictures/";
+
 
     @Override
-    public RegisterResponse registerUser(User user){//, MultipartFile photoFile){
+    public RegisterResponse registerUser(User user, MultipartFile profilePic){//, MultipartFile photoFile){
         try{
             User checkUserMobile = userRepository.fetchByMobileExact(aes.encryptText("AES", user.getMobile()));
             User checkUserEmail = userRepository.fetchByEmailExact(aes.encryptText("AES", user.getEmail()));
@@ -98,6 +104,33 @@ public class AuthServiceImpl implements AuthService {
             int age = Period.between(user.getDob(), LocalDate.now()).getYears();
             if(age < 16 || age > 120){
                 throw new QuException("Please provide valid date of birth");
+            }
+
+            // If user uploads profile pic then
+            if(profilePic != null){
+
+                // check upload type
+                if(!profilePic.getContentType().contains("image")){
+                    throw new QuException("Please upload image type only");
+                }
+
+                // check size
+                if(profilePic.getSize() >= 6291456){
+                    throw new QuException("Please upload less than 6mb profile pic");
+                }
+
+                // generate random string , attach current file extension
+                String filename = UUID.randomUUID()+profilePic.getOriginalFilename().substring(profilePic.getOriginalFilename().lastIndexOf("."));
+
+                // create profilePictures folder if not exists
+                File file = new File(uploadDirectory);
+                if(!file.exists()){
+                    file.mkdir();
+                }
+
+                // file copy
+                Files.copy(profilePic.getInputStream(), Paths.get(filename));
+                user.setProfilePic(filename);
             }
 
             /******************* Get or generate *****************/
@@ -165,6 +198,9 @@ public class AuthServiceImpl implements AuthService {
             sessionObj.setAttribute("enabled", user.getEnabled());
             sessionObj.setAttribute("mobile", user.getMobile());
             sessionObj.setAttribute("role", user.getRole());
+
+            // send that sessionobj to LoggedInUserDTO :)
+            sessionService.saveForSession(request);
 
             return this.setterForLoginResponse(
                     user.getName(),
@@ -247,14 +283,4 @@ public class AuthServiceImpl implements AuthService {
         return loginResponse;
     }
 
-//    private String shuffler(Long num){
-//        String str="QWERTYusdfghjkgywehbdsxhjnx!@#$%^&*()mzbcvcbnfn";
-//        List<String> letters = Array.asList(str.split(""));
-//        Collections.shuffle(letters);
-//        String shuffled = "";
-//        for(String l:letters){
-//            shuffled += l;
-//        }
-//        return shuffled;
-//    }
 }
