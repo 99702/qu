@@ -2,10 +2,7 @@ package com.qu.app.entity;
 
 import lombok.Data;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Data

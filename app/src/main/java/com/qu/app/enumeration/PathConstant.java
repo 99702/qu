@@ -25,11 +25,10 @@ public class PathConstant {
 
     // Post votes
     public static final String VOTE_A_POST = "{title}";
-
-
+    public static final String GET_A_LIST_OF_USER_WHO_VOTED_THAT_POST = "listOfUser/{postTitle}/";
+    public static final String CURRENT_USER_VOTED_POST_LIST = "currentUser";
     // Comment constants
     public static final String CREATE_COMMENT = "create/{postId}/";
-
 
 
 

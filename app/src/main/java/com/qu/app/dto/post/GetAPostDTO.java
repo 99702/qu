@@ -1,7 +1,6 @@
 package com.qu.app.dto.post;
 
 import com.qu.app.entity.Images;
-import com.qu.app.entity.User;
 import lombok.Data;
 
 import java.util.Set;
@@ -12,4 +11,5 @@ public class GetAPostDTO {
     private String title;
     private String description;
     private Set<Images> images;
+    private Long totalVotes;
 }

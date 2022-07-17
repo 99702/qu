@@ -9,6 +9,7 @@ import com.qu.app.entity.Post;
 import com.qu.app.entity.User;
 import com.qu.app.error.QuException;
 import com.qu.app.repository.PostRepository;
+import com.qu.app.repository.PostVotesRepository;
 import com.qu.app.repository.UserRepository;
 import com.qu.app.service.PostService;
 import com.qu.app.utils.AES;
@@ -21,10 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.PostUpdate;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -34,6 +37,10 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private PostVotesRepository postVotesRepository;
+
     @Autowired
     private RSA rsa;
     @Autowired
@@ -274,7 +281,7 @@ public class PostServiceImpl implements PostService {
         String role = allParams.get("userRole");
         String title = allParams.get("postTitle");
         String description = allParams.get("postDescription");
-        System.out.println(dobStr);
+
         try{
             if(description != null && mobile != null){
                 return postRepository.listOnPostDescriptionAndUserMobile(description, aes.encryptText("AES",mobile));
@@ -318,13 +325,12 @@ public class PostServiceImpl implements PostService {
         getAPostDTO.setTitle(post.getTitle());
         getAPostDTO.setImages(post.getImages());
         getAPostDTO.setAuthorName(post.getUser().getName());
+        getAPostDTO.setTotalVotes(postVotesRepository.getTotalVoteOfPost(post.getId()));
         return getAPostDTO;
     }
-
 //    private List<PostListWithUserDetails> setterForPostListWithUserDetails(PostListWithUserDetails postListWithUserDetails){
 //        List<PostListWithUserDetails> postListWithUserDetailsList = new ArrayList<>();
 ////        for(PostListWithUserDetails postListWithUserDetails1: postListWithUserDetailsList)
 //
 //    }
-
 }

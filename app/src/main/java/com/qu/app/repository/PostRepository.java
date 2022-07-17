@@ -1,7 +1,7 @@
 package com.qu.app.repository;
 
-import com.qu.app.entity.Post;
 import com.qu.app.dto.post.response.PostListWithUserDetails;
+import com.qu.app.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

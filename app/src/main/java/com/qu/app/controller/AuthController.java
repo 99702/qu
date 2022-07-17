@@ -26,7 +26,7 @@ public class AuthController {
      * @return - LoginResponse
      */
     @PostMapping(PathConstant.LOGIN_USER)
-    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request){return authService.loginUser(request, loginRequest);};
+    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request){return authService.loginUser(request, loginRequest);}
 
     /**
      * Register a user

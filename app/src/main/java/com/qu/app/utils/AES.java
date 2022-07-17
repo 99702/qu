@@ -4,7 +4,8 @@ package com.qu.app.utils;
 import com.qu.app.error.QuException;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 

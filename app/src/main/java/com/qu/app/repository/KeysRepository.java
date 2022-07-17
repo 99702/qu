@@ -1,8 +1,6 @@
 package com.qu.app.repository;
 
 import com.qu.app.entity.Keys;
-import lombok.Builder;
-import lombok.Data;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

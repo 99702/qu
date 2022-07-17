@@ -1,6 +1,5 @@
 package com.qu.app.dto.user;
 
-import lombok.Builder;
 import lombok.Data;
 
 

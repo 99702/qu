@@ -2,8 +2,6 @@ package com.qu.app.dto.post.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Builder
 @AllArgsConstructor

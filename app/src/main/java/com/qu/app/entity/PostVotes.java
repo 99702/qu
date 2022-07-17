@@ -1,8 +1,9 @@
 package com.qu.app.entity;
 
 import lombok.Data;
-import javax.persistence.*;
-import java.io.Serializable;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 
 @Entity
 @Data

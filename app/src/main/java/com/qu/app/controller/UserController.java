@@ -1,7 +1,6 @@
 package com.qu.app.controller;
 
-import com.qu.app.dto.user.*;
-
+import com.qu.app.dto.user.GetAUserDTO;
 import com.qu.app.dto.user.request.UpdateRequest;
 import com.qu.app.dto.user.response.UpdateResponse;
 import com.qu.app.enumeration.PathConstant;
@@ -74,5 +73,5 @@ public class UserController {
     @PostMapping(PathConstant.GET_USER_ATTR_EXACT)
     public List<GetAUserDTO> fetchByAttrExact(@RequestParam Map<String, String> allParams ) {
         return userService.fetchByAttrExact(allParams);
-    };
+    }
 }

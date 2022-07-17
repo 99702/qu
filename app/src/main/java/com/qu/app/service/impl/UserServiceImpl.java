@@ -1,8 +1,7 @@
 package com.qu.app.service.impl;
 
-import com.qu.app.dto.user.*;
+import com.qu.app.dto.user.GetAUserDTO;
 import com.qu.app.dto.user.request.UpdateRequest;
-import com.qu.app.dto.user.response.LoginResponse;
 import com.qu.app.dto.user.response.UpdateResponse;
 import com.qu.app.entity.Post;
 import com.qu.app.entity.User;
@@ -13,14 +12,13 @@ import com.qu.app.service.KeysService;
 import com.qu.app.service.SessionService;
 import com.qu.app.service.UserService;
 import com.qu.app.utils.AES;
-
 import com.qu.app.utils.RSA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 
 @Service

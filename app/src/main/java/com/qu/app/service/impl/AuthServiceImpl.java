@@ -7,32 +7,27 @@ import com.qu.app.entity.User;
 import com.qu.app.error.QuException;
 import com.qu.app.repository.PostRepository;
 import com.qu.app.repository.UserRepository;
-
+import com.qu.app.service.AuthService;
 import com.qu.app.service.KeysService;
-import com.qu.app.service.SessionService;
 import com.qu.app.utils.AES;
-
 import com.qu.app.utils.JwtUtil;
 import com.qu.app.utils.RSA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.*;
-import java.util.UUID;
-
-
-import com.qu.app.service.AuthService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
