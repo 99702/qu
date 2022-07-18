@@ -14,11 +14,9 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping(PathConstant.CREATE_COMMENT)
-    public CreateCommentResponse createPost(@RequestBody CreateCommentRequest createCommentRequest, @PathVariable("postId") Long postId){
+    public CreateCommentResponse createPost(@RequestBody CreateCommentRequest createCommentRequest, @PathVariable("postId") Long postId) {
         return commentService.createComment(createCommentRequest, postId);
     }
-
-
 
 
 //    private final SessionService sessionService;

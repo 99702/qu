@@ -22,20 +22,24 @@ public class AuthController {
 
     /**
      * signin the user
+     *
      * @param loginRequest
      * @return - LoginResponse
      */
     @PostMapping(PathConstant.LOGIN_USER)
-    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request){return authService.loginUser(request, loginRequest);}
+    public LoginResponse loginUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        return authService.loginUser(request, loginRequest);
+    }
 
     /**
      * Register a user
+     *
      * @param user
      * @return - ResponseEntity<RegisterUserDTO>
      */
 
-    @PostMapping(value=PathConstant.REGISTER_USER)
-    public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestParam(name = "profilePic", required = false) MultipartFile profilePic){
+    @PostMapping(value = PathConstant.REGISTER_USER)
+    public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestParam(name = "profilePic", required = false) MultipartFile profilePic) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(user, profilePic));
     }
 

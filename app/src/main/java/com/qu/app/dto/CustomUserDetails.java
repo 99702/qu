@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 
-
 public class CustomUserDetails implements UserDetails {
     @Autowired
     private final User user;
@@ -19,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
     @Autowired
     private AES aes;
 
-    public CustomUserDetails(User user){
+    public CustomUserDetails(User user) {
         this.user = user;
     }
 
@@ -41,7 +40,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
-    public Long getId(){
+    public Long getId() {
         return user.getId();
     }
 

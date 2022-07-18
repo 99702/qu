@@ -11,10 +11,10 @@ import java.io.Serializable;
 @Data
 public class PostVotesId implements Serializable {
     @ManyToOne
-    @JoinColumn(name="fk_user",referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "fk_user", referencedColumnName = "id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="fk_post", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "fk_post", referencedColumnName = "id", nullable = false)
     private Post post;
 }

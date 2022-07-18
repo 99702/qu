@@ -10,6 +10,7 @@ import java.util.Map;
 public interface UserService {
     /**
      * deleteUser - Deletes that userId by admin
+     *
      * @param userId
      * @return String
      */
@@ -17,6 +18,7 @@ public interface UserService {
 
     /**
      * getSingleUser - Fetches single user given userId
+     *
      * @param userId
      * @return GetAUserDTO
      */
@@ -24,12 +26,14 @@ public interface UserService {
 
     /**
      * Get all users
+     *
      * @return List of GetAUserDTO
      */
     List<GetAUserDTO> getAllUser();
 
     /**
      * updateUser - Updates current user by that userId
+     *
      * @param userUpdateRequest
      * @param userId
      * @return UpdateResponse dto
@@ -38,12 +42,14 @@ public interface UserService {
 
     /**
      * fetchUserStatistics - Fetches Map of count of user statistics who are  enabled, admin, role....
+     *
      * @return Map<String, Long>
      */
     Map<String, Long> fetchUserStatistics();
 
     /**
      * Fetches user by user attributes as request params
+     *
      * @param allParams
      * @return List of GetAUserDTO
      */

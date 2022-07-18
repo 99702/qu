@@ -18,15 +18,17 @@ public class PostVotesController {
     PostVotesService postVotesService;
 
     @PostMapping(PathConstant.VOTE_A_POST)
-    public VoteAPostResponseDTO voteToAPost(@PathVariable(value = "title") String title, HttpServletRequest request){return postVotesService.voteToAPost(title, request);}
+    public VoteAPostResponseDTO voteToAPost(@PathVariable(value = "title") String title, HttpServletRequest request) {
+        return postVotesService.voteToAPost(title, request);
+    }
 
     @PostMapping(PathConstant.GET_A_LIST_OF_USER_WHO_VOTED_THAT_POST)
-    public List<GetAListOfUserWhoVotedThatPostDTO> getAListOfUserWhoVotedThatPost(@PathVariable(value="postTitle") String postTitle){
+    public List<GetAListOfUserWhoVotedThatPostDTO> getAListOfUserWhoVotedThatPost(@PathVariable(value = "postTitle") String postTitle) {
         return postVotesService.getAListOfUserWhoVotedThatPostService(postTitle);
     }
 
     @PostMapping(PathConstant.CURRENT_USER_VOTED_POST_LIST)
-    public List<GetAPostDTO> getCurrentUserVotedPostList(@RequestHeader("Authorization") String token){
+    public List<GetAPostDTO> getCurrentUserVotedPostList(@RequestHeader("Authorization") String token) {
         return postVotesService.getCurrentUserVotedPostList(token);
     }
 

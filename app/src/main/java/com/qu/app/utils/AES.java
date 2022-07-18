@@ -13,33 +13,34 @@ import java.util.Base64;
 
 @Component
 public class AES {
-    private  final String quAESSecretKey = "1234567890123456";
-    public String encryptText(String algorithm, String inputString){
-        try{
+    private final String quAESSecretKey = "1234567890123456";
+
+    public String encryptText(String algorithm, String inputString) {
+        try {
             Cipher cipher = Cipher.getInstance(algorithm);
             SecretKey secretKey = this.convertKeyToSecretKey();
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
             byte[] cipherText = cipher.doFinal(inputString.getBytes());
             return Base64.getEncoder().encodeToString(cipherText);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new QuException("Cant run AES");
         }
     }
 
-    public String decryptText(String algorithm, String inputString){
-        try{
+    public String decryptText(String algorithm, String inputString) {
+        try {
             Cipher cipher = Cipher.getInstance(algorithm);
             SecretKey secretKey = this.convertKeyToSecretKey();
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] plainText = cipher.doFinal(Base64.getDecoder().decode(inputString));
             return new String(plainText);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new QuException("Cant run AES");
         }
     }
 
-    private  SecretKey convertKeyToSecretKey() {
-        return  new SecretKeySpec(this.quAESSecretKey.getBytes(), "AES");
+    private SecretKey convertKeyToSecretKey() {
+        return new SecretKeySpec(this.quAESSecretKey.getBytes(), "AES");
     }
 }

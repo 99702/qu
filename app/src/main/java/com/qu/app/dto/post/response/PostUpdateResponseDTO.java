@@ -1,9 +1,9 @@
 package com.qu.app.dto.post.response;
 
-import lombok.Builder;
+import lombok.Data;
 
 
-@Builder
+@Data
 public class PostUpdateResponseDTO {
     private String title;
     private String description;

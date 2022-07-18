@@ -11,10 +11,10 @@ resources:
     name: /create/{userId}/{postId}
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656395115368
     isPrivate: false
     settingStoreCookies: true
@@ -30,7 +30,7 @@ resources:
     created: 1656395112881
     name: comment
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1656395112881
     _type: request_group
@@ -40,7 +40,7 @@ resources:
     created: 1656304219344
     name: qu
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1656304219344
     _type: request_group
@@ -60,9 +60,9 @@ resources:
     name: /post/current
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
+    body: { }
+    parameters: [ ]
+    headers: [ ]
     authentication:
       type: bearer
       token: U2irJ/oDxenw9OIMWMpmHG7meXiqEozTurX6YPOAl99pel40V+yMk87IQPj0VwfUUFb0plxNsbxI7mz1EKhqvrA6dtl2JKL1/uf5Hug8zn+Y2NJZeKNwQA0AcQHJk590Bs/EwlfQg8JK25Pj92spbr+f/YtT2QHuDXlWJD1oUNtvuhd3N6XON0TYOW5I8ulpHZb9vpeWQT5pa6fjhgMDea95l9AZiJ+k8fKgw0mT26x1kZKsQArcjH2U/ir8TQ5QtzFb/IHBiyH4AvxNMoE2Fx3NN4WSaxTlE0wKPzP00mWbf7HCW0lM1faG/xob4M8xAFqn3vlpDFCmtnfJEW+nOziYuS8EOZm47sndDoKDjHnACKc+GbooH6MAd/l9It8n
@@ -81,7 +81,7 @@ resources:
     created: 1656376076594
     name: post
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1656376076594
     _type: request_group
@@ -96,12 +96,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_43deb2c9c9be4295903ee08fb9ff54aa
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656395290296
     isPrivate: false
     settingStoreCookies: true
@@ -122,12 +122,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_43deb2c9c9be4295903ee08fb9ff54aa
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656395246564
     isPrivate: false
     settingStoreCookies: true
@@ -148,12 +148,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_43deb2c9c9be4295903ee08fb9ff54aa
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656395202832
     isPrivate: false
     settingStoreCookies: true
@@ -174,12 +174,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_43deb2c9c9be4295903ee08fb9ff54aa
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656395159100
     isPrivate: false
     settingStoreCookies: true
@@ -204,7 +204,7 @@ resources:
         	"description": "wattson",
         	"title": " emma wattson"
         }
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -233,7 +233,7 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -258,9 +258,9 @@ resources:
     name: /secret
     description: ""
     method: GET
-    body: {}
-    parameters: []
-    headers: []
+    body: { }
+    parameters: [ ]
+    headers: [ ]
     authentication:
       type: bearer
       token: U2irJ/oDxenw9OIMWMpmHG7meXiqEozTurX6YPOAl99pel40V+yMk87IQPj0VwfUUFb0plxNsbxI7mz1EKhqvrA6dtl2JKL1/uf5Hug8zn+pp/JR3pkw93xjEE2D8AaKBcDoQtPbQEHHY8KovzDksDvZBqWDaL/kNum+0rOu7flkAaWJeBNrvbpTfJ+ZfVMhdjkbKtnwHm+94JyLELfAGoFx+s6PYhHmXCh9MZDjoI9bW0m3Q0L4N4diJoNJwgA93Mv1s2VK5hTHGzztSWWR5meot+QWis0qU+dtXc5oZgye77jmKAVS00qIbJZjLbimiyoRF1OmquK3sAzWilARceqZ9wDUqvkYN3fKTLCPbENt8Tqg/KSzgdrRgUCdEDKc
@@ -281,7 +281,7 @@ resources:
     created: 1657447449998
     name: dummuy
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1657447449998
     _type: request_group
@@ -291,7 +291,7 @@ resources:
     created: 1656304229101
     name: user
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1656304229101
     _type: request_group
@@ -313,12 +313,12 @@ resources:
         	"mobile":"3111111111",
         	"dob":"2000-03-11"
         }
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_b60876e6c85d48a28797409c2f85f759
-    authentication: {}
+    authentication: { }
     metaSortKey: -1657075494966
     isPrivate: false
     settingStoreCookies: true
@@ -334,7 +334,7 @@ resources:
     created: 1657075444134
     name: auth
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1657075444134
     _type: request_group
@@ -356,12 +356,12 @@ resources:
         	"mobile":"4111111111",
         	"dob":"2001-03-11"
         }
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_b60876e6c85d48a28797409c2f85f759
-    authentication: {}
+    authentication: { }
     metaSortKey: -1657075478557.5
     isPrivate: false
     settingStoreCookies: true
@@ -386,7 +386,7 @@ resources:
         	"email": "sukhdev@gmail.com",
         	"password": "111111111"	
         }
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -419,7 +419,7 @@ resources:
         	"email": "emma@gmail.com",
         	"password": "111111111"	
         }
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -448,7 +448,7 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -471,7 +471,7 @@ resources:
     created: 1656478033013
     name: jpql
     description: ""
-    environment: {}
+    environment: { }
     environmentPropertyOrder: null
     metaSortKey: -1656478033013
     _type: request_group
@@ -483,10 +483,10 @@ resources:
     name: find/exact?role=
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656491392107
     isPrivate: false
     settingStoreCookies: true
@@ -504,10 +504,10 @@ resources:
     name: find/exact?mobile=
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656484777229
     isPrivate: false
     settingStoreCookies: true
@@ -525,10 +525,10 @@ resources:
     name: find/exact?dob=
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656483092473.25
     isPrivate: false
     settingStoreCookies: true
@@ -546,10 +546,10 @@ resources:
     name: find/exact?enabled=
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656481407717.5
     isPrivate: false
     settingStoreCookies: true
@@ -571,12 +571,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_5fae6301de184236b271280a9e932e09
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656478038206
     isPrivate: false
     settingStoreCookies: true
@@ -598,12 +598,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_5fae6301de184236b271280a9e932e09
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656474913797
     isPrivate: false
     settingStoreCookies: true
@@ -621,9 +621,9 @@ resources:
     name: search?enabled=true
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
+    body: { }
+    parameters: [ ]
+    headers: [ ]
     authentication:
       type: bearer
       token: U2irJ/oDxenw9OIMWMpmHKgw3nQJttq5J54/7TpFO5ophyjODpzni7UCi4V48UkCK5JveMbAgKc0dvM5gAYu2Lm8B3Z5y65V1ZA1ZsOfwvYlKgSQiY2cneFMs3AL1dSXEesTg7xcluLcvXtAxzWIaqAz0srrnPX/uEEJsUyjXS6YCU+/uYM9Q4d4jAYL+ynw4JknEeARmn2H/14Svsq1nbAW98UzOFnMzka+Qi41f9Wk6qiZ7qk+DtJAYw1Mfdbm
@@ -645,10 +645,10 @@ resources:
     name: search?email=bam
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656308933464
     isPrivate: false
     settingStoreCookies: true
@@ -666,10 +666,10 @@ resources:
     name: search?name=bam
     description: ""
     method: POST
-    body: {}
-    parameters: []
-    headers: []
-    authentication: {}
+    body: { }
+    parameters: [ ]
+    headers: [ ]
+    authentication: { }
     metaSortKey: -1656308933171
     isPrivate: false
     settingStoreCookies: true
@@ -690,12 +690,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_93b8036133c64b489078ecd66d753992
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656305509967
     isPrivate: false
     settingStoreCookies: true
@@ -716,7 +716,7 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
@@ -745,12 +745,12 @@ resources:
     body:
       mimeType: application/json
       text: "{}"
-    parameters: []
+    parameters: [ ]
     headers:
       - name: Content-Type
         value: application/json
         id: pair_403dcbfb8a4042309b9b4a050b28f491
-    authentication: {}
+    authentication: { }
     metaSortKey: -1656305507725
     isPrivate: false
     settingStoreCookies: true
@@ -765,7 +765,7 @@ resources:
     modified: 1656206099403
     created: 1656206099403
     name: Base Environment
-    data: {}
+    data: { }
     dataPropertyOrder: null
     color: null
     isPrivate: false

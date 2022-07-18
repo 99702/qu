@@ -11,6 +11,7 @@ public interface PostVotesService {
 
     /**
      * Toggle vote / unvote for that post title , taking user from token
+     *
      * @param title
      * @param request
      * @return VoteAPostResponseDTO

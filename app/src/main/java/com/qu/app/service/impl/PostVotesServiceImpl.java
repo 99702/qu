@@ -48,17 +48,17 @@ public class PostVotesServiceImpl implements PostVotesService {
         String authorizationHeader = request.getHeader("Authorization");
         String message = "";
         String votedBy = "";
-        try{
+        try {
             // get that current Post from post title
             Post currentPost = postRepository.fetchPostByTitle(title);
 
             // check if currentPost title post is not null
-            if(currentPost == null){
+            if (currentPost == null) {
                 throw new QuException("Post doesn't exists");
             }
 
             // get user from jwt token
-            String jwt = aes.decryptText("AES",authorizationHeader.substring(7) );
+            String jwt = aes.decryptText("AES", authorizationHeader.substring(7));
             Claims claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(jwt)
@@ -67,17 +67,17 @@ public class PostVotesServiceImpl implements PostVotesService {
             Long checkLoggedInUserId = Long.valueOf((Integer) claims.get("userId"));
 
             // voting only works if the post author and voting user  is not same
-            if(!currentPost.getUser().getId().equals(checkLoggedInUserId)){
+            if (!currentPost.getUser().getId().equals(checkLoggedInUserId)) {
                 // find logged in user
                 User user = userRepository.fetchById(checkLoggedInUserId);
                 votedBy = user.getName();
 
                 // check if user have already voted that post
                 // if he already voted that post,  delete that vote by user
-                if(postVotesRepository.fetchIfUserHasVotedThatPost(title, checkLoggedInUserId) == 1){
+                if (postVotesRepository.fetchIfUserHasVotedThatPost(title, checkLoggedInUserId) == 1) {
                     postVotesRepository.deletePostByThatUser(currentPost.getId(), checkLoggedInUserId);
                     message = "down";
-                } else{
+                } else {
                     // else if user haven't voted that post save
                     PostVotesId postVotesId = new PostVotesId();
                     postVotesId.setPost(currentPost);
@@ -89,47 +89,48 @@ public class PostVotesServiceImpl implements PostVotesService {
                     // save
                     postVotesRepository.save(postVotes);
                 }
-            } else{
+            } else {
                 throw new QuException("Cant vote own post");
             }
             return this.setterForVoteAPostResponseDTO(currentPost.getId(), currentPost.getTitle(), message, votedBy);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }
 
     @Override
     public List<GetAListOfUserWhoVotedThatPostDTO> getAListOfUserWhoVotedThatPostService(String title) {
-        List<GetAListOfUserWhoVotedThatPostDTO> listOfUserWhoVotedThatPostDTOS=new ArrayList<>();
-        List<PostVotes>  postVotesList = postVotesRepository.getListOfUserWhoVotedCurrentPost(title);
-        for(PostVotes postVotes : postVotesList){
+        List<GetAListOfUserWhoVotedThatPostDTO> listOfUserWhoVotedThatPostDTOS = new ArrayList<>();
+        List<PostVotes> postVotesList = postVotesRepository.getListOfUserWhoVotedCurrentPost(title);
+        for (PostVotes postVotes : postVotesList) {
             listOfUserWhoVotedThatPostDTOS.add(this.setterForGetAListOfUserWhoVotedThatPostDTO(postVotes));
         }
         return listOfUserWhoVotedThatPostDTOS;
     }
+
     @Override
     public List<GetAPostDTO> getCurrentUserVotedPostList(String token) {
 
-        try{
+        try {
             List<GetAPostDTO> getAPostDTOList = new ArrayList<>();
 
             //get userId from token
             Claims claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(aes.decryptText("AES",token.substring(7)))
+                    .parseClaimsJws(aes.decryptText("AES", token.substring(7)))
                     .getBody();
-            Long  checkUserIdFromToken = Long.valueOf((Integer)claims.get("userId"));
+            Long checkUserIdFromToken = Long.valueOf((Integer) claims.get("userId"));
             List<PostVotes> postVotesList = postVotesRepository.getCurrentUserVotedPostList(checkUserIdFromToken);
-            for(PostVotes postVotes: postVotesList){
+            for (PostVotes postVotes : postVotesList) {
                 getAPostDTOList.add(this.setterForGetAPostDTO(postVotes));
             }
             return getAPostDTOList;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }
 
-    private VoteAPostResponseDTO setterForVoteAPostResponseDTO(Long postId, String postTitle, String message, String votedBy){
+    private VoteAPostResponseDTO setterForVoteAPostResponseDTO(Long postId, String postTitle, String message, String votedBy) {
         VoteAPostResponseDTO voteAPostResponseDTO = new VoteAPostResponseDTO();
         voteAPostResponseDTO.setPostTitle(postTitle);
         voteAPostResponseDTO.setVoteCount(postVotesRepository.fetchPostVoteCount(postId));
@@ -137,14 +138,16 @@ public class PostVotesServiceImpl implements PostVotesService {
         voteAPostResponseDTO.setVotedBy(votedBy);
         return voteAPostResponseDTO;
     }
-    private GetAListOfUserWhoVotedThatPostDTO setterForGetAListOfUserWhoVotedThatPostDTO(PostVotes postVotes){
+
+    private GetAListOfUserWhoVotedThatPostDTO setterForGetAListOfUserWhoVotedThatPostDTO(PostVotes postVotes) {
         GetAListOfUserWhoVotedThatPostDTO getAListOfUserWhoVotedThatPostDTO = new GetAListOfUserWhoVotedThatPostDTO();
         getAListOfUserWhoVotedThatPostDTO.setUserId(postVotes.getPostVotesId().getUser().getId());
         getAListOfUserWhoVotedThatPostDTO.setName(postVotes.getPostVotesId().getUser().getName());
         getAListOfUserWhoVotedThatPostDTO.setProfilePic(postVotes.getPostVotesId().getUser().getProfilePic());
         return getAListOfUserWhoVotedThatPostDTO;
     }
-    private GetAPostDTO setterForGetAPostDTO(PostVotes postVotes){
+
+    private GetAPostDTO setterForGetAPostDTO(PostVotes postVotes) {
         GetAPostDTO getAPostDTO = new GetAPostDTO();
         getAPostDTO.setDescription(postVotes.getPostVotesId().getPost().getDescription());
         getAPostDTO.setTitle(postVotes.getPostVotesId().getPost().getTitle());

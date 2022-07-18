@@ -14,9 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 public class WebSecurityConfig {
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
     // WHITE_LIST_URLS are allowed without authentication
     private static final String[] WHITE_LIST_URLS = {
             "/auth/" + PathConstant.REGISTER_USER,
@@ -28,14 +25,15 @@ public class WebSecurityConfig {
             "/post/" + PathConstant.SEARCH_POST_BY + "/u",
             "/post/" + PathConstant.SEARCH_POST_BY + "/similar",
             "/post/" + PathConstant.LIST_POST,
+            "/post/vote/" + PathConstant.GET_A_LIST_OF_USER_WHO_VOTED_THAT_POST,
     };
-
     private static final String[] ADMIN_URLS = {
-            "/user/"+ PathConstant.DELETE_USER,
-            "/user/"+ PathConstant.UPDATE_USER,
-            "/post/"+PathConstant.DELETE_POST,
+            "/user/" + PathConstant.DELETE_USER,
+            "/user/" + PathConstant.UPDATE_USER,
+            "/post/" + PathConstant.DELETE_POST,
     };
-
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,7 +52,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
 }

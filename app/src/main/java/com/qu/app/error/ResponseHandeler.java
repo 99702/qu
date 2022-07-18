@@ -10,9 +10,9 @@ import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 @ResponseStatus
-public class ResponseHandeler{
+public class ResponseHandeler {
     @ExceptionHandler(QuException.class)
-    private ResponseEntity<ErrorMessage> CustomExeception(QuException exception, WebRequest request){
+    private ResponseEntity<ErrorMessage> CustomExeception(QuException exception, WebRequest request) {
         ErrorMessage message = new ErrorMessage(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }

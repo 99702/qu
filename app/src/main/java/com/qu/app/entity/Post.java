@@ -19,10 +19,10 @@ public class Post {
     @JoinColumn(name = "FK_USER", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(name="title", unique = true, nullable = false)
+    @Column(name = "title", unique = true, nullable = false)
     private String title;
 
-    @Column(name="description", nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY)

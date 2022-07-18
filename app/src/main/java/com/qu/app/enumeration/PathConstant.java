@@ -31,5 +31,4 @@ public class PathConstant {
     public static final String CREATE_COMMENT = "create/{postId}/";
 
 
-
 }

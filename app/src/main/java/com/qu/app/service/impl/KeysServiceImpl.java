@@ -25,9 +25,9 @@ public class KeysServiceImpl implements KeysService {
     private KeysRepository keysRepository;
 
     @Override
-    public Map<String, String > SaveGetRSAKeys() {
+    public Map<String, String> SaveGetRSAKeys() {
         // check and if public, save public private key in database
-        if(keysRepository.findByName("PUBLIC") == null){
+        if (keysRepository.findByName("PUBLIC") == null) {
             // Initialization of key pair for encryption and decryption
             KeyPair keyPair = rsa.getKeyPair();
             PublicKey publicKey = keyPair.getPublic();
@@ -57,28 +57,29 @@ public class KeysServiceImpl implements KeysService {
         String encodedKeyStr = Base64.getEncoder().encodeToString(keyBytes);
         return encodedKeyStr;
     }
+
     @Override
-    public PublicKey decodePublicKey(String keyStr){
-        try{
+    public PublicKey decodePublicKey(String keyStr) {
+        try {
             byte[] keyBytes = Base64.getDecoder().decode(keyStr);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey key = keyFactory.generatePublic(spec);
             return key;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }
 
     @Override
-    public PrivateKey decodePrivateKey(String keyStr){
-        try{
+    public PrivateKey decodePrivateKey(String keyStr) {
+        try {
             byte[] keyBytes = Base64.getDecoder().decode(keyStr);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PrivateKey key = keyFactory.generatePrivate(keySpec);
             return key;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }

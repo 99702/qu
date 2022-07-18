@@ -13,6 +13,7 @@ import java.util.Map;
 public interface PostService {
     /**
      * createPost - Creates a post for authenticated user
+     *
      * @param post
      * @return PostCreateDTO
      */
@@ -20,12 +21,15 @@ public interface PostService {
 
     /**
      * getAllPost() - Get all the post
+     *
      * @return List of GetAPostDTO
      */
-    List<GetAPostDTO> getAllPost();
+//    List<GetAPostDTO> getAllPost(int offset, int pageSize);
+    List<GetAPostDTO> getAllPost(Integer pageNo);
 
     /**
      * fetchPostTitle - Given Exact title of post, returns exact title related post
+     *
      * @param title
      * @return GetAPostDTO
      */
@@ -33,6 +37,7 @@ public interface PostService {
 
     /**
      * fetchPostTitle - Given keyword , it returns all post that matches given keyword
+     *
      * @param desc
      * @return List<GetAPostDTO>
      */
@@ -40,6 +45,7 @@ public interface PostService {
 
     /**
      * fetchCurrentUserPost - Automatically fetches current loggedIn user post
+     *
      * @param userId
      * @return
      */
@@ -47,6 +53,7 @@ public interface PostService {
 
     /**
      * updatePost - updates a current post
+     *
      * @param post
      * @param postTitle
      * @return PostUpdateResponseDTO
@@ -54,7 +61,8 @@ public interface PostService {
     PostUpdateResponseDTO updatePost(HttpServletRequest request, Post post, String postTitle);
 
     /**
-     *  deletePost - deletes a post
+     * deletePost - deletes a post
+     *
      * @param PostTitle
      * @param userId
      * @return String
@@ -63,6 +71,7 @@ public interface PostService {
 
     /**
      * fetchSimilarPostTitle - find posts that search matching word from title
+     *
      * @param title
      * @return List of GetAPostDTO
      */
@@ -70,6 +79,7 @@ public interface PostService {
 
     /**
      * fetchLoggedInUserPost - Fetches a list of post by loggedin user
+     *
      * @return List of GetAPostDTO
      */
     List<GetAPostDTO> fetchLoggedInUserPost();
@@ -77,6 +87,7 @@ public interface PostService {
 
     /**
      * Lists custom post  and user fields , tangled
+     *
      * @param allParams
      * @return
      */

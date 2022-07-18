@@ -9,7 +9,7 @@ import java.io.Serializable;
 @IdClass(Comment.class)
 @Data
 public class Comment implements Serializable {
-    @Column(name="comment")
+    @Column(name = "comment")
     private String comment;
 
     @Id

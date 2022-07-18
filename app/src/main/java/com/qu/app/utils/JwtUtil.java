@@ -35,6 +35,7 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
+
     private Claims extractAllClaims(String token) {
 //        assert Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(SECRET_KEY).getBody().getSubject().equals("Joe");
         return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();

@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class Images {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Long id;
+    private Long id;
 
     @Column(name = "image", unique = false, length = 300000)
     private byte[] image;

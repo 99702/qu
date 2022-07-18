@@ -35,13 +35,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private AES aes;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain){
-        try{
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+        try {
             String authorizationHeader = request.getHeader("Authorization");
             String username = null;
             String jwt = null;
 
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 // get jwt(encrypted)  from header and decrypt
                 jwt = aes.decryptText("AES", authorizationHeader.substring(7));
                 username = jwtUtil.extractUsername(jwt);
@@ -55,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //                    throw new QuException("User not enabled");
 //                }
             }
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // get userDetails from loadUserByUsername given Username as email
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -70,7 +70,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-            }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }

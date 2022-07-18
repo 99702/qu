@@ -10,41 +10,41 @@ import java.util.Set;
 
 @Entity
 @Data
-@Table(name="user")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name="email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name="dob", nullable = false)
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @Column(name = "dob", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
 
-    @Column(name="password", nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name="mobile", nullable = false, unique = true)
+    @Column(name = "mobile", nullable = false, unique = true)
     private String mobile;
 
     @Column(name = "profile_pic")
     private String profilePic;
 
-    @Column(name="enabled")
+    @Column(name = "enabled")
     private Boolean enabled = false;
 
-    @Column(name="role")
+    @Column(name = "role")
     private String role;
 
     @OneToMany(fetch = FetchType.LAZY)
     private Set<Post> post = new HashSet<>();
 
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name="FK_COMMENT", referencedColumnName = "id")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FK_COMMENT", referencedColumnName = "id")
     private Set<Comment> comment = new HashSet<>();
 }

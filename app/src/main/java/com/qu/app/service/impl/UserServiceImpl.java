@@ -22,74 +22,69 @@ import java.time.Period;
 import java.util.*;
 
 @Service
-public class UserServiceImpl  implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private KeysService keysService;
-
+public class UserServiceImpl implements UserService {
     @Autowired
     RSA rsa;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Autowired
     SessionService sessionService;
-
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private KeysService keysService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private AES aes;
+
     @Override
     public String deleteUser(Long userId) {
-        try{
+        try {
             sessionService.loggedInUser();
             User user = userRepository.fetchById(userId);
             // throws error if user is null
-            if(user == null){
+            if (user == null) {
                 throw new QuException("User doesn't exists");
             }
 
             // if user role is admin dont delete it
-            if(user.getRole().equals("ADMIN")){
+            if (user.getRole().equals("ADMIN")) {
                 throw new QuException("Admin can't be deleted");
             }
 
             // begin first by delete the post by that user in Post table
             List<Post> postByThatUser = postRepository.fetchCurrentUserPost(userId);
-            for(Post post: postByThatUser){
+            for (Post post : postByThatUser) {
                 postRepository.delete(post);
             }
             // now delete the user
             userRepository.delete(user);
             return "User deleted successfully.";
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
-            throw  new QuException(e.getMessage());
-        }
-    }
-
-    @Override
-    public GetAUserDTO getSingleUser(Long userId){
-        try{
-            User user = userRepository.fetchById(userId);
-            if(user == null){
-                throw new QuException("User doesn't exists");
-            }
-            return this.setterForGetAUserDTO(user);
-        }catch (Exception e){
             throw new QuException(e.getMessage());
         }
     }
 
     @Override
-    public List<GetAUserDTO> getAllUser(){
+    public GetAUserDTO getSingleUser(Long userId) {
+        try {
+            User user = userRepository.fetchById(userId);
+            if (user == null) {
+                throw new QuException("User doesn't exists");
+            }
+            return this.setterForGetAUserDTO(user);
+        } catch (Exception e) {
+            throw new QuException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<GetAUserDTO> getAllUser() {
         List<User> userList = userRepository.findAll();
         List<GetAUserDTO> getAUserDTOList = new ArrayList<>();
-        for (User user: userList) {
+        for (User user : userList) {
             GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
             getAUserDTOList.add(getAUserDTO);
         }
@@ -98,11 +93,11 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public UpdateResponse updateUser(UpdateRequest userUpdateRequest, Long userId) {
-        try{
+        try {
             User getCurrentUser = userRepository.fetchById(userId);
 
             // throw error if user of userId doesnt exists
-            if(getCurrentUser == null){
+            if (getCurrentUser == null) {
                 throw new QuException("User doesn't exists");
             }
 
@@ -114,33 +109,33 @@ public class UserServiceImpl  implements UserService {
 
             // check if given user fields are null  if null leave,
             // else update the currentPost with the updated field
-            if(Objects.nonNull(userUpdateRequest.getName()) && !"".equalsIgnoreCase(userUpdateRequest.getName())){
+            if (Objects.nonNull(userUpdateRequest.getName()) && !"".equalsIgnoreCase(userUpdateRequest.getName())) {
                 getCurrentUser.setName(userUpdateRequest.getName());
             }
-            if(Objects.nonNull(userUpdateRequest.getDob())){
+            if (Objects.nonNull(userUpdateRequest.getDob())) {
                 // throw error if age less than 16 and greater than 120
                 int age = Period.between(userUpdateRequest.getDob(), LocalDate.now()).getYears();
-                if(age < 16 || age > 120){
+                if (age < 16 || age > 120) {
                     throw new QuException("Please provide valid date of birth");
                 }
 
                 getCurrentUser.setDob(userUpdateRequest.getDob());
             }
-            if(Objects.nonNull(userUpdateRequest.getEmail()) && !"".equalsIgnoreCase(userUpdateRequest.getEmail())){
+            if (Objects.nonNull(userUpdateRequest.getEmail()) && !"".equalsIgnoreCase(userUpdateRequest.getEmail())) {
                 // check if email already exists
-                if(userRepository.fetchByEmailExact(userUpdateRequest.getEmail()) != null){
+                if (userRepository.fetchByEmailExact(userUpdateRequest.getEmail()) != null) {
                     throw new QuException("Email is already exists");
                 }
                 getCurrentUser.setEmail(userUpdateRequest.getEmail());
             }
-            if(Objects.nonNull(userUpdateRequest.getMobile())){
+            if (Objects.nonNull(userUpdateRequest.getMobile())) {
                 // check if mobile is less than 10
-                if(userUpdateRequest.getMobile().length() < 10){
+                if (userUpdateRequest.getMobile().length() < 10) {
                     throw new QuException("Mobile number invalid");
                 }
                 // Encrypt mobile with AES algorithm , throw if encrypted mobile string already exists
                 String encryptedMobile = aes.encryptText("AES", userUpdateRequest.getMobile());
-                if(userRepository.fetchByMobileExact(encryptedMobile) != null){
+                if (userRepository.fetchByMobileExact(encryptedMobile) != null) {
                     throw new QuException("Mobile number already exists");
                 }
                 getCurrentUser.setMobile(encryptedMobile);
@@ -148,19 +143,19 @@ public class UserServiceImpl  implements UserService {
 //            if(Objects.nonNull(userUpdateRequest.getProfilePic())){
 //                getCurrentUser.setProfilePic(userUpdateRequest.getProfilePic());
 //            }
-             if(Objects.nonNull(userUpdateRequest.getPassword())){
+            if (Objects.nonNull(userUpdateRequest.getPassword())) {
 
-                 // throw error if password is less than 8
-                 if(userUpdateRequest.getPassword().length() < 8){
-                     throw new QuException("Password must be longer than 8 characters");
-                 }
-                 // hash password
-                 getCurrentUser.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
-             }
+                // throw error if password is less than 8
+                if (userUpdateRequest.getPassword().length() < 8) {
+                    throw new QuException("Password must be longer than 8 characters");
+                }
+                // hash password
+                getCurrentUser.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
+            }
 
             userRepository.save(getCurrentUser);
             return this.setterForUpdateResponse(getCurrentUser);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new QuException(e.getMessage());
         }
     }
@@ -187,7 +182,7 @@ public class UserServiceImpl  implements UserService {
     public List<GetAUserDTO> fetchByAttrExact(Map<String, String> allParams) {
         String name = allParams.get("name");
         String email = allParams.get("email");
-        Boolean enabled = Boolean.parseBoolean(allParams.get("enabled"));
+        String enabled = allParams.get("enabled");
         String mobileStr = allParams.get("mobile");
         String role = allParams.get("role");
         String dobStr = allParams.get("dob");
@@ -195,51 +190,51 @@ public class UserServiceImpl  implements UserService {
 //        Date dob = new SimpleDateFormat("yyyy-MM-dd").parse(allParams.get("dob"));
         List<GetAUserDTO> results = new ArrayList<>();
 
-        if(name != null){
+        if (name != null) {
             List<User> userList = userRepository.fetchByNameExact(name);
             List<GetAUserDTO> getAUserDTOList = new ArrayList<>();
-            for(User user: userList){
+            for (User user : userList) {
                 GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
                 getAUserDTOList.add(getAUserDTO);
             }
             results.addAll(getAUserDTOList);
         }
-        if(email != null){
-            User user = userRepository.fetchByEmailExact(email);
+        if (email != null) {
+            User user = userRepository.fetchByEmailExact(aes.encryptText("AES", email));
             GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
             results.add(getAUserDTO);
         }
 
-        if(mobileStr != null){
-            User user = userRepository.fetchByMobileExact(mobileStr);
+        if (mobileStr != null) {
+            User user = userRepository.fetchByMobileExact(aes.encryptText("AES", mobileStr));
             GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
             results.add(getAUserDTO);
         }
-        if(enabled){
-            List<User> userList = userRepository.fetchByEnabled(enabled);
+        if (enabled != null) {
+            List<User> userList = userRepository.fetchByEnabled(Boolean.parseBoolean(enabled));
             List<GetAUserDTO> getAUserDTOList = new ArrayList<>();
-            for(User user: userList){
+            for (User user : userList) {
                 GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
                 getAUserDTOList.add(getAUserDTO);
             }
             results.addAll(getAUserDTOList);
         }
-        if(role != null){
+        if (role != null) {
             List<User> userList = userRepository.fetchByRoleExact(role);
             List<GetAUserDTO> getAUserDTOList = new ArrayList<>();
-            for(User user: userList){
+            for (User user : userList) {
                 GetAUserDTO getAUserDTO = this.setterForGetAUserDTO(user);
                 getAUserDTOList.add(getAUserDTO);
             }
             results.addAll(getAUserDTOList);
         }
 
-        if(dobStr != null){
+        if (dobStr != null) {
             LocalDate dob = LocalDate.parse(dobStr);
             List<User> userList = userRepository.fetchBydobExact(dob);
             List<GetAUserDTO> getAUserDTOList = new ArrayList<>();
-            if(dob!=null){
-                for(User user: userList){
+            if (dob != null) {
+                for (User user : userList) {
                     getAUserDTOList.add(this.setterForGetAUserDTO(user));
                 }
                 results.addAll(getAUserDTOList);
@@ -250,7 +245,7 @@ public class UserServiceImpl  implements UserService {
         return results;
     }
 
-    private GetAUserDTO setterForGetAUserDTO(User user){
+    private GetAUserDTO setterForGetAUserDTO(User user) {
         GetAUserDTO getAUserDTO = new GetAUserDTO();
         getAUserDTO.setEmail(aes.decryptText("AES", user.getEmail()));
         getAUserDTO.setMobile(aes.decryptText("AES", user.getMobile()));
@@ -259,7 +254,7 @@ public class UserServiceImpl  implements UserService {
         return getAUserDTO;
     }
 
-    private  UpdateResponse setterForUpdateResponse(User user){
+    private UpdateResponse setterForUpdateResponse(User user) {
         UpdateResponse updateResponse = new UpdateResponse();
         updateResponse.setName(user.getName());
         updateResponse.setDob(user.getDob());

@@ -10,12 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class SessionServiceImpl implements SessionService {
-    private HttpServletRequest request;
-
     @Autowired
     AES aes;
-
     LoggedInUser loggedInUser = new LoggedInUser();
+    private HttpServletRequest request;
 
     public void saveForSession(HttpServletRequest request) {
         loggedInUser.setUserId(null);
@@ -28,11 +26,11 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public String email() {
-        return aes.decryptText("AES" ,(String) this.request.getAttribute("email"));
+        return aes.decryptText("AES", (String) this.request.getAttribute("email"));
     }
 
     @Override
     public Long mobile() {
-        return Long.parseLong(aes.decryptText("AES" ,(String) this.request.getAttribute("mobile")));
+        return Long.parseLong(aes.decryptText("AES", (String) this.request.getAttribute("mobile")));
     }
 }

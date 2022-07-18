@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface AuthService {
     /**
      * Register the user , given user details
+     *
      * @param user
      * @return RegisterResponse dto
      */
@@ -18,6 +19,7 @@ public interface AuthService {
 
     /**
      * For logging in the user, sends token and other details
+     *
      * @param request
      * @param loginRequest
      * @return LoginResponse dto

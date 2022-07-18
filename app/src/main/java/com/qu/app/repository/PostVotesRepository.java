@@ -18,7 +18,7 @@ public interface PostVotesRepository extends JpaRepository<PostVotes, PostVotesI
 
     @Modifying
     @Query(value = "DELETE from post_votes pv where pv.fk_user=:userId and pv.fk_post=:postId", nativeQuery = true)
-    void  deletePostByThatUser(Long postId, Long userId);
+    void deletePostByThatUser(Long postId, Long userId);
 
     // count total vote of that postId
     @Query(value = "SELECT COUNT(*) as total_vote from post_votes pv  where pv.fk_post=:postId", nativeQuery = true)
@@ -31,5 +31,4 @@ public interface PostVotesRepository extends JpaRepository<PostVotes, PostVotesI
 
     @Query("SELECT p FROM PostVotes p where p.postVotesId.user.id=:userId")
     List<PostVotes> getCurrentUserVotedPostList(Long userId);
-
 }
