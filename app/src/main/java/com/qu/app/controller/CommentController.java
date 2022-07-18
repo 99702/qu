@@ -18,7 +18,6 @@ public class CommentController {
         return commentService.createComment(createCommentRequest, postId);
     }
 
-
 //    private final SessionService sessionService;
 //    public CommentController(SessionService sessionService) {
 //        this.sessionService = sessionService;

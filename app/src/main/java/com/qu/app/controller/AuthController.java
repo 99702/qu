@@ -20,6 +20,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+
     /**
      * signin the user
      *
@@ -42,5 +43,4 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> registerUser(@RequestPart User user, @RequestParam(name = "profilePic", required = false) MultipartFile profilePic) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(user, profilePic));
     }
-
 }

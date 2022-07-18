@@ -28,7 +28,6 @@ public class PostController {
         return postService.getAllPost(pageNo);
     }
 
-
     @PostMapping(PathConstant.CREATE_POST)
     //@PreAuthorize("hasAuthority('ADMIN'")
     public PostCreateDTO createPost(@RequestBody Post post, HttpServletRequest request) {

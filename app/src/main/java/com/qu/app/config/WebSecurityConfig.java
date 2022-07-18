@@ -27,6 +27,8 @@ public class WebSecurityConfig {
             "/post/" + PathConstant.LIST_POST,
             "/post/vote/" + PathConstant.GET_A_LIST_OF_USER_WHO_VOTED_THAT_POST,
     };
+
+    // admin urls
     private static final String[] ADMIN_URLS = {
             "/user/" + PathConstant.DELETE_USER,
             "/user/" + PathConstant.UPDATE_USER,
